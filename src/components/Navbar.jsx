@@ -7,6 +7,7 @@ import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import VideoCallOutlinedIcon from "@mui/icons-material/VideoCallOutlined";
 import SignUp from "./SignUp";
+import SignIn from "./SignIn";
 
 const Container = styled.div`
   position: sticky;
@@ -77,7 +78,8 @@ const Avatar = styled.img`
 
 const Navbar = () => {
   // const { currentUser } = useSelector((state) => state.user);
-  const [open, setOpen] = useState(false);
+  const [SignUpOpen, setSignUpOpen] = useState(false);
+  const [SignInOpen, setSignInOpen] = useState(false);
   return (
     <>
       <Container>
@@ -90,12 +92,13 @@ const Navbar = () => {
             <VideoCallOutlinedIcon  />
             <Avatar src={currentUser.img} />
           </User>*/}
-          <Button onClick={() => setOpen(true)}>
-            <AccountCircleOutlinedIcon /> Sign Up
+          <Button onClick={() => setSignInOpen(true)}>
+            <AccountCircleOutlinedIcon /> Sign In
           </Button>
         </Wrapper>
       </Container>
-      {open && <SignUp setOpen={setOpen} />}
+      {SignUpOpen && <SignUp setSignUpOpen={setSignUpOpen} setSignInOpen={setSignInOpen}/>}
+      {SignInOpen && <SignIn setSignInOpen={setSignInOpen} setSignUpOpen={setSignUpOpen} />}
     </>
   );
 };

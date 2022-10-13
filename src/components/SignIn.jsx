@@ -89,7 +89,7 @@ const LoginText = styled.div`
   font-size: 16px;
   font-weight: 500;
   color: ${({ theme }) => theme.soft};
-  margin: 20px 20px 38px 20px;
+  margin: 20px 20px 30px 20px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -98,27 +98,23 @@ const Span = styled.span`
   color: ${({ theme }) => theme.primary};
   `
 
-const SignUp = ({setSignUpOpen,setSignInOpen}) => {
-  //ssetSignInOpen(false)
+const SignIn = ({setSignInOpen,setSignUpOpen}) => {
+   // setSignUpOpen(false)
   return (
     <Container>
       <Wrapper>
-        <CloseRounded style={{position: 'absolute', top: '24px', right: '30px', cursor: 'pointer'}} onClick={() => setSignUpOpen(false)}/>
-        <Title>Sign Up</Title>
+        <CloseRounded style={{position: 'absolute', top: '24px', right: '30px', cursor: 'pointer'}} onClick={() => setSignInOpen(false)}/>
+        <Title>Sign In</Title>
         <OutlinedBox googleButton={TroubleshootRounded} style={{margin: '24px'}}>
           <GoogleIcon src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/1000px-Google_%22G%22_Logo.svg.png?20210618182606"/>
-        Continue with Google
+        Sign In with Google
         </OutlinedBox>
         <Divider>
           <Line/>
           or
           <Line/>
-        </Divider>
+        </Divider>   
         <OutlinedBox style={{marginTop: '24px'}}>
-          <Person style={{paddingRight: '12px'}}/>
-          <TextInput placeholder="Full Name" type="text"/>
-        </OutlinedBox>        
-        <OutlinedBox>
           <EmailRounded style={{paddingRight: '12px'}}/>
           <TextInput placeholder="Email Id" type="email"/>
         </OutlinedBox>            
@@ -127,15 +123,15 @@ const SignUp = ({setSignUpOpen,setSignInOpen}) => {
           <TextInput placeholder="Password" type="password"/>
         </OutlinedBox>                   
         <OutlinedBox button={true} activeButton={true} style={{marginTop: '6px'}}>
-          Create Account
+          Sign In
         </OutlinedBox>
         <LoginText>
-          Already have an account ? 
-          <Span onClick={()=>{setSignUpOpen(false); setSignInOpen(true)}} style={{fontWeight: '500', marginLeft: '6px', cursor: 'pointer'}}>Sign In</Span>
+          Don't have an account ? 
+          <Span onClick={() => {setSignUpOpen(true); setSignInOpen(false)}} style={{fontWeight: '500', marginLeft: '6px', cursor: 'pointer'}}>Create Account</Span>
         </LoginText>
       </Wrapper>
     </Container>
   );
 };
 
-export default SignUp;
+export default SignIn;
