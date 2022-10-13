@@ -10,17 +10,22 @@ import {
 import Menu from './components/Menu';
 import Navbar from './components/Navbar';
 import styled from 'styled-components';
+import Dashboard from './pages/Dashboard';
+import Projects from './pages/Projects';
 
 const Container = styled.div`
   display: flex; 
+  background-color: ${({ theme }) => theme.bg};
 `;
 
 const Main = styled.div`
   flex: 7;
-  background-color: ${({ theme }) => theme.bg};
 `;
 const Wrapper = styled.div`
-  padding: 3%;
+  padding: 0% 1%;
+  height: 90vh;
+  overflow-y: scroll !important;
+  scroll-behavior: smooth;
 `;
 
 function App() {
@@ -33,20 +38,20 @@ function App() {
           <Main>
 
           <Navbar />
-            {/*
           <Wrapper>
           <Routes>
             <Route path="/">
-              <Route index element={<Home type="random" />}/>
-              <Route path="trends" element={<Home type="trend" />}/>
-              <Route path="subscriptions" element={<Home type="sub" />}/>
+              <Route index element={<Dashboard/>}/>
+              <Route path="projects" element={<Projects/>}/>
+              {/*<Route path="subscriptions" element={<Home type="sub" />}/>
               <Route path="signin" element={<SignIn />} />
               <Route path="video">
                 <Route path=":id" element={<Video/>}/>
               </Route>
+              */}
             </Route>
           </Routes>
-  </Wrapper>*/}
+  </Wrapper>
           </Main>
         </BrowserRouter>
       </Container>

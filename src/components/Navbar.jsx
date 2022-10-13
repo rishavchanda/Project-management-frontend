@@ -13,6 +13,8 @@ const Container = styled.div`
   position: sticky;
   top: 0;
   height: 56px;
+  margin: 6px;
+  border-radius: 12px;
   background-color: ${({ theme }) => theme.bgLighter};
 `;
 const Wrapper = styled.div`
@@ -24,27 +26,26 @@ const Wrapper = styled.div`
   position: relative;
 `;
 const Search = styled.div`
-  width: 50%;
+  width: 40%;
   left: 0px;
   right: 0px;
   margin: auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border: 1px solid ${({ theme }) => theme.soft2};
-  border-radius: 3px;
-  color: ${({ theme }) => theme.text};
-  background-color: ${({ theme }) => theme.soft2};
+  border-radius: 100px;
+  color: ${({ theme }) => theme.textSoft};
+  background-color: ${({ theme }) => theme.bgDark};
 `;
 const Input = styled.input`
   width: 100%;
   border: none;
   font-size: 16px;
-  padding: 10px;
-  border-radius: 3px;
-  background-color: ${({ theme }) => theme.bgDark};
+  padding: 10px 20px;
+  border-radius: 100px;
+  background-color: transparent;
   outline: none;
-  color: ${({ theme }) => theme.text};
+  color: ${({ theme }) => theme.textSoft};
 `;
 
 const Button = styled.button`

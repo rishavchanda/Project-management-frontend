@@ -42,11 +42,11 @@ const OutlinedBox = styled.div`
   ${({button,theme}) => button && `
   border: none;
     background: ${theme.itemHover};
-    color: ${ theme.soft2};`}
+    color: '${ theme.soft2}';`}
     ${({activeButton,theme}) => activeButton && `
   border: none;
     background: ${theme.primary};
-    color: ${ theme.text};`}
+    color: white;`}
   margin: 3px 20px;
   font-size: 16px;
   display: flex;
@@ -69,7 +69,7 @@ const Divider = styled.div`
 `
 const Line = styled.div`
   width: 80px;
-  height: 2px;
+  height: 1px;
   border-radius: 10px;
   margin: 0px 10px;
   background-color: ${({ theme }) => theme.soft};
@@ -88,7 +88,7 @@ color: ${({ theme }) => theme.textSoft};
 const LoginText = styled.div`
   font-size: 16px;
   font-weight: 500;
-  color: ${({ theme }) => theme.soft};
+  color: ${({ theme }) => theme.soft2};
   margin: 20px 20px 38px 20px;
   display: flex;
   justify-content: center;

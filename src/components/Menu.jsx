@@ -25,6 +25,8 @@ const Container = styled.div`
   flex: 1.3;
   background-color: ${({ theme }) => theme.bgLighter};
   height: 100vh;
+  border-top-right-radius: 14px;
+  border-bottom-right-radius: 14px;
   color: ${({ theme }) => theme.text};
   font-size: 14px;
   position: sticky;
@@ -112,7 +114,7 @@ const Menu = ({ darkMode, setDarkMode }) => {
             Dashboard
           </Item>
         </Link>
-        <Link to="trends" style={{ textDecoration: "none", color: "inherit" }}>
+        <Link to="projects" style={{ textDecoration: "none", color: "inherit" }}>
           <Item>
             <Diversity2Icon />
             Projects

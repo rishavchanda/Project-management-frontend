@@ -3,12 +3,13 @@ export const darkTheme = {
     bgLighter:"#1C1E27",
     itemHover: "#3A3C45",
     itemText:"#DADEDF",
-    primary: "#2EAD69",
+    primary: "#854CE6",
     bgDark:"#15171E",
     text:"#F2F3F4",
     textSoft:"#C1C7C9",
     soft:"#373D3F",
-    soft2:"#8C979A"
+    soft2:"#8C979A",
+    card: "#1C1E27",
 
     /*Colors
 Swatch 1
@@ -34,6 +35,7 @@ export const lightTheme = {
     bgDark:"white",
     text:"#2F2F2F",
     textSoft:"#606060",
-    soft:"#f5f5f5",
-    soft2:"#F0F0F0"
+    soft:"#C4C4C4",
+    soft2:"#757575",
+    card: "#FFFFFF",
   }
