@@ -35,7 +35,7 @@ const Container = styled.div`
 const ContainerWrapper = styled.div`
   height: 90%;
   overflow-y: scroll !important;
-  margin-top: 16px;
+  margin-top: 22px;
 `;
 const Space = styled.div`
   height: 50px;
@@ -137,32 +137,6 @@ const Menu = ({ darkMode, setDarkMode }) => {
         <Item>
           <HistoryOutlinedIcon />
           History
-        </Item>
-        <Hr />
-        <Title>BEST OF YOUTUBE</Title>
-        <Item>
-          <LibraryMusicOutlinedIcon />
-          Music
-        </Item>
-        <Item>
-          <SportsBasketballOutlinedIcon />
-          Sports
-        </Item>
-        <Item>
-          <SportsEsportsOutlinedIcon />
-          Gaming
-        </Item>
-        <Item>
-          <MovieOutlinedIcon />
-          Movies
-        </Item>
-        <Item>
-          <ArticleOutlinedIcon />
-          News
-        </Item>
-        <Item>
-          <LiveTvOutlinedIcon />
-          Live
         </Item>
         <Hr />
         <Item>
