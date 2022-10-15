@@ -1,7 +1,10 @@
 import React from "react";
-import { useState } from "react";
+import { Fragment, useState, useRef } from "react";
 import styled from "styled-components";
 import { DateRangeRounded, MoreHoriz } from "@mui/icons-material";
+import { useDrag, useDrop } from "react-dnd";
+import ITEM_TYPE from "../data/types";
+import { tagColors } from "../data/data";
 
 const Container = styled.div`
   padding: 14px 14px;
@@ -12,6 +15,7 @@ const Container = styled.div`
   border-radius: 10px;
   background-color: ${({ theme }) => theme.card};
   color: ${({ theme }) => theme.text};
+  cursor: pointer;
 `;
 
 const Image = styled.img`
@@ -23,7 +27,7 @@ const Image = styled.img`
 
 const Title = styled.div`
   font-size: 17px;
-  font-weight: 600;
+  font-weight: 500;
   color: ${({ theme }) => theme.textSoft};
   margin-top: 12px;
   display: flex;
@@ -49,8 +53,8 @@ const Tags = styled.div`
 const Tag = styled.div`
   padding: 4px 10px;
   border-radius: 8px;
-  color: #4cc08f;
-  border: 1px solid #4cc08f;
+  color: ${({tagColor}) => tagColor+"99"};
+  border: 1px solid ${({tagColor}) => tagColor+"99"};
   font-size: 12px;
   font-weight: 500;
 `;
@@ -80,41 +84,87 @@ const Avatar = styled.img`
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  margin-right: -10px; 
+  margin-right: -10px;
   border: 0.5px solid #fff;
 `;
 
-const Card = ({ item }) => {
-  return (
-    <Container>
-      {item.image && <Image src={item.image} />}
-      <Title>
-        {item.title}
-        <MoreHoriz />
-      </Title>
-      <Desc>{item.desc}</Desc>
-      <Tags>
-        {item.tags.map((tag) => (
-          <Tag>{tag}</Tag>
-        ))}
-      </Tags>
-      <Bottom>
-        <Time>
-          <DateRangeRounded /> {item.time}
-        </Time>
-        <AvatarGroup>
-          {item.members.map((member) => (
-            <Avatar src={member.image} />
-          ))}
-        </AvatarGroup>
+const Card = ({tagColor, item, index, status }) => {
+  const ref = useRef(null);
 
-        {/*<AvatarGroup  size="sm" max={3}>
+  /*const [, drop] = useDrop({
+      accept: ITEM_TYPE,
+      hover(item, monitor) {
+          if (!ref.current) {
+              return
+          }
+          const dragIndex = item.index;
+          const hoverIndex = index;
+
+          if (dragIndex === hoverIndex) {
+              return
+          }
+
+          const hoveredRect = ref.current.getBoundingClientRect();
+          const hoverMiddleY = (hoveredRect.bottom - hoveredRect.top) / 2;
+          const mousePosition = monitor.getClientOffset();
+          const hoverClientY = mousePosition.y - hoveredRect.top;
+
+          if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
+              return;
+          }
+
+          if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
+              return;
+          }
+          moveItem(dragIndex, hoverIndex);
+          item.index = hoverIndex;
+      },
+  });
+
+  const [{ isDragging }, drag] = useDrag({
+      item: { type: ITEM_TYPE, ...item, index },
+      collect: monitor => ({
+          isDragging: monitor.isDragging()
+      })
+  });*/
+
+  //drag(drop(ref));
+
+  return (
+    <Fragment>
+      <Container
+        ref={ref}
+        className={"item"}
+      >
+        {item.image && <Image src={item.image} />}
+        <Title>
+          {item.title}
+          <MoreHoriz />
+        </Title>
+        <Desc>{item.desc}</Desc>
+        <Tags>
+          {item.tags.map((tag) => (
+            <Tag tagColor={tagColors[Math.floor(Math.random() * tagColors.length)]}>{tag}</Tag>
+          ))}
+        </Tags>
+        <Bottom>
+          <Time>
+            <DateRangeRounded /> {item.time}
+          </Time>
+          <AvatarGroup>
+            {item.members.map((member) => (
+              <Avatar src={member.image} />
+            ))}
+          </AvatarGroup>
+
+          {/*<AvatarGroup  size="sm" max={3}>
             {item.members.map(([member) => (
                 <Avatar name={member.name} src={member.image} />
             ))}
             </AvatarGroup>*/}
-      </Bottom>
-    </Container>
+        </Bottom>
+      </Container>
+    </Fragment>
   );
 };
 

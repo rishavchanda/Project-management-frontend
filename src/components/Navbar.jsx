@@ -49,7 +49,7 @@ const Input = styled.input`
 `;
 
 const Button = styled.button`
-  padding: 5px 15px;
+  padding: 5px 18px;
   background-color: transparent;
   border: 1px solid ${({ theme }) => theme.primary};
   color: ${({ theme }) => theme.primary};
@@ -59,6 +59,13 @@ const Button = styled.button`
   display: flex;
   align-items: center;
   gap: 5px;
+  font-size: 15px;
+  border-radius: 100px;
+  transition: all 0.3s ease;
+  &:hover {
+    background-color: ${({ theme }) => theme.primary};
+    color: ${({ theme }) => theme.text};
+  }
 `;
 
 const User = styled.div`

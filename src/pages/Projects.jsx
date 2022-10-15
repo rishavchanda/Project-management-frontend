@@ -1,7 +1,9 @@
 import React from "react";
 import { useState } from "react";
 import styled from "styled-components";
-import Card from "../components/Card";
+import Item from "../components/Card";
+import DropWrapper from "../components/DropWrapper";
+import { statuses, data, tagColors } from "../data/data";
 
 const Container = styled.div`
   width: 100%;
@@ -34,96 +36,54 @@ const Wrapper = styled.div`
 `;
 
 const Projects = () => {
-  const Working = [
-    {
-      id: 1,
-      title: "Project 1",
-      desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. ",
-      tags: ["React", "Node", "MongoDB"],
-      time: "2 days ago",
-      image: "https://source.unsplash.com/coding",
-      members: [{name: "John", image: "https://source.unsplash.com/random"}, {name: "John", image: "https://source.unsplash.com/random"}, {name: "John", image: "https://source.unsplash.com/random"}]
-    },
-    {
-      id: 2,
-      title: "Project 2",
-      desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit.Lorem ipsum dolor sit amet, consectetur adipiscing elit. ",
-      tags: ["React", "Node", "MongoDB"],
-      time: "2 days ago",
-      image: "",
-      members: [{name: "John", image: "https://source.unsplash.com/random"}, {name: "John", image: "https://source.unsplash.com/random"}, {name: "John", image: "https://source.unsplash.com/random"}]
-    }
-  ]
-  
-  const Completed = [
-    {
-      id: 1,
-      title: "Project 1",
-      desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. ",
-      tags: ["Android", "MERN", "MongoDB"],
-      time: "2 days ago",
-      image: "",
-      members: [{name: "John", image: "https://source.unsplash.com/random"}, {name: "John", image: "https://source.unsplash.com/random"}, {name: "John", image: "https://source.unsplash.com/random"}]
-    }
-  ]
+  const [items, setItems] = useState(data);
 
-  const InProgress = [
-    {
-      id: 1,
-      title: "Project 1",
-      desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. ",
-      tags: ["React", "Node", "MongoDB"],
-      time: "2 days ago",
-      image: "",
-      members: [{name: "John", image: "https://source.unsplash.com/random"}, {name: "John", image: "https://source.unsplash.com/random"}, {name: "John", image: "https://source.unsplash.com/random"}]
-    },
-    {
-      id: 2,
-      title: "Project 2",
-      desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. ",
-      tags: ["React", "Node", "MongoDB"],
-      time: "2 days ago",
-      image: "https://source.unsplash.com/coding",
-      members: [{name: "John", image: "https://source.unsplash.com/random"}, {name: "John", image: "https://source.unsplash.com/random"}, {name: "John", image: "https://source.unsplash.com/random"}]
-    },
-    {
-      id: 3,
-      title: "Project 3",
-      desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. ",
-      tags: ["React", "Node", "MongoDB"],
-      time: "2 days ago",
-      image: "",
-      members: [{name: "John", image: "https://source.unsplash.com/random"}, {name: "John", image: "https://source.unsplash.com/random"}, {name: "John", image: "https://source.unsplash.com/random"}]
-    }
-  ]
+  const onDrop = (item, monitor, status) => {
+    const mapping = statuses.find((si) => si.status === status);
+
+    setItems((prevState) => {
+      const newItems = prevState
+        .filter((i) => i.id !== item.id)
+        .concat({ ...item, status});
+      return [...newItems];
+    });
+  };
+
+  const moveItem = (dragIndex, hoverIndex) => {
+    const item = items[dragIndex];
+    setItems((prevState) => {
+      const newItems = prevState.filter((i, idx) => idx !== dragIndex);
+      newItems.splice(hoverIndex, 0, item);
+      return [...newItems];
+    });
+  };
 
   return (
     <Container>
       <Column>
-        <ItemWrapper>
-          Working <Span>(0)</Span>
-          <Wrapper>
-            {Working.map((item) => (
-              <Card item={item} />
-            ))}
-          </Wrapper>
-        </ItemWrapper>
-        <ItemWrapper>
-          In Progress <Span>(4)</Span>
-          <Wrapper>
-          {Completed.map((item) => (
-              <Card item={item} />
-            ))}
-          </Wrapper>
-        </ItemWrapper>    
-        <ItemWrapper>
-          Completed <Span>(2)</Span>
-          <Wrapper>           
-          {InProgress.map((item) => (
-              <Card item={item} />
-            ))}
-          </Wrapper>
-        </ItemWrapper>
+        {statuses.map((s) => {
+          return (
+            <ItemWrapper key={statuses}>
+              {s.status} <Span>(0)</Span>
+              <Wrapper>
+              {data.filter((item) => item.status == s.status)
+                    .map((item, idx) => (
+                      <Item
+                        key={item}
+                        item={item}
+                        index={idx}
+                        status={s}
+                        tagColor={tagColors[3]}
+                      />
+                    ))}
+                    {/*<DropWrapper onDrop={onDrop} status={s.status}> 
+                  
+              
+                    </DropWrapper>*/}
+              </Wrapper>
+            </ItemWrapper>
+          );
+        })}
       </Column>
     </Container>
   );

@@ -12,6 +12,8 @@ import Navbar from './components/Navbar';
 import styled from 'styled-components';
 import Dashboard from './pages/Dashboard';
 import Projects from './pages/Projects';
+import { DndProvider } from "react-dnd";
+import { HTML5Backend } from "react-dnd-html5-backend";
 
 const Container = styled.div`
   display: flex; 
@@ -31,31 +33,33 @@ const Wrapper = styled.div`
 function App() {
   const [darkMode, setDarkMode] = useState(true);
   return (
-    <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
-      <Container>
-        <BrowserRouter>
-          <Menu darkMode={darkMode} setDarkMode={setDarkMode} />
-          <Main>
+    <DndProvider backend={HTML5Backend}>
+      <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
+        <Container>
+          <BrowserRouter>
+            <Menu darkMode={darkMode} setDarkMode={setDarkMode} />
+            <Main>
 
-          <Navbar />
-          <Wrapper>
-          <Routes>
-            <Route path="/">
-              <Route index element={<Dashboard/>}/>
-              <Route path="projects" element={<Projects/>}/>
-              {/*<Route path="subscriptions" element={<Home type="sub" />}/>
+              <Navbar />
+              <Wrapper>
+                <Routes>
+                  <Route path="/">
+                    <Route index element={<Dashboard />} />
+                    <Route path="projects" element={<Projects />} />
+                    {/*<Route path="subscriptions" element={<Home type="sub" />}/>
               <Route path="signin" element={<SignIn />} />
               <Route path="video">
                 <Route path=":id" element={<Video/>}/>
               </Route>
               */}
-            </Route>
-          </Routes>
-  </Wrapper>
-          </Main>
-        </BrowserRouter>
-      </Container>
-    </ThemeProvider>
+                  </Route>
+                </Routes>
+              </Wrapper>
+            </Main>
+          </BrowserRouter>
+        </Container>
+      </ThemeProvider>
+    </DndProvider>
   );
 }
 
