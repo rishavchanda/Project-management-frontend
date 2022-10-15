@@ -8,6 +8,9 @@ import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import VideoCallOutlinedIcon from "@mui/icons-material/VideoCallOutlined";
 import SignUp from "./SignUp";
 import SignIn from "./SignIn";
+import MenuIcon from "@mui/icons-material/Menu";
+import { IconButton } from "@mui/material";
+import { MenuOpen, NotificationsRounded } from "@mui/icons-material";
 
 const Container = styled.div`
   position: sticky;
@@ -15,6 +18,7 @@ const Container = styled.div`
   height: 56px;
   margin: 6px;
   border-radius: 12px;
+  box-shadow: 0 0 16px 0 rgba(0, 0, 0, 0.04);
   background-color: ${({ theme }) => theme.bgLighter};
 `;
 const Wrapper = styled.div`
@@ -22,9 +26,14 @@ const Wrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  padding: 0px 40px;
+  padding: 0px 14px;
   position: relative;
 `;
+
+const MenuButton = styled(IconButton)`
+  color: ${({ theme }) => theme.textSoft} !important;
+`;
+
 const Search = styled.div`
   width: 40%;
   left: 0px;
@@ -74,6 +83,7 @@ const User = styled.div`
   gap: 30px;
   font-weight: 500;
   font-size: 18px;
+  padding: 0px 20px;
   color: ${({ theme }) => theme.text};
 `;
 
@@ -84,7 +94,7 @@ const Avatar = styled.img`
   background-color: #999;
 `;
 
-const Navbar = () => {
+const Navbar = ({menuOpen,setMenuOpen}) => {
   // const { currentUser } = useSelector((state) => state.user);
   const [SignUpOpen, setSignUpOpen] = useState(false);
   const [SignInOpen, setSignInOpen] = useState(false);
@@ -92,21 +102,30 @@ const Navbar = () => {
     <>
       <Container>
         <Wrapper>
+          <MenuButton onClick={()=>setMenuOpen(!menuOpen)}>
+            <MenuIcon/>
+          </MenuButton>
           <Search>
             <Input placeholder="Search" />
-            <SearchIcon style={{ marginRight: "12px", marginLeft: "12px" }} />
+            <SearchIcon style={{ marginRight: "20px", marginLeft: "20px" }} />
           </Search>
-          {/*<User>
-            <VideoCallOutlinedIcon  />
-            <Avatar src={currentUser.img} />
-          </User>*/}
-          <Button onClick={() => setSignInOpen(true)}>
-            <AccountCircleOutlinedIcon /> Sign In
-          </Button>
+          <User>
+            {/*
+            <NotificationsRounded/>
+            <Avatar src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHd_XKsw6LmueZnx8WO9oB_jMDieCpOKWe3Q&usqp=CAU" name="R"/>
+            */}
+            <Button onClick={() => setSignInOpen(true)}>
+              <AccountCircleOutlinedIcon /> Sign In
+            </Button>
+          </User>
         </Wrapper>
       </Container>
-      {SignUpOpen && <SignUp setSignUpOpen={setSignUpOpen} setSignInOpen={setSignInOpen}/>}
-      {SignInOpen && <SignIn setSignInOpen={setSignInOpen} setSignUpOpen={setSignUpOpen} />}
+      {SignUpOpen && (
+        <SignUp setSignUpOpen={setSignUpOpen} setSignInOpen={setSignInOpen} />
+      )}
+      {SignInOpen && (
+        <SignIn setSignInOpen={setSignInOpen} setSignUpOpen={setSignUpOpen} />
+      )}
     </>
   );
 };

@@ -31,6 +31,7 @@ const Container = styled.div`
   font-size: 14px;
   position: sticky;
   top: 0;
+  box-shadow: 0 0 16px 0 rgba(0, 0, 0, 0.04);
 `;
 const ContainerWrapper = styled.div`
   height: 90%;
@@ -98,9 +99,9 @@ const Title = styled.h2`
 `;
 
 
-const Menu = ({ darkMode, setDarkMode }) => {    
+const Menu = ({ darkMode, setDarkMode, setMenuOpen }) => {    
   return (
-    <Container>
+    <Container setMenuOpen={setMenuOpen}>
       <Link to="/" style={{ textDecoration: "none", color: "inherit"}}>
         <Logo>
           <Image src="" />

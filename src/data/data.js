@@ -1,15 +1,15 @@
 const data = [
     {
         id: 1,
-        title: "Project 1",
+        title: "Dashboard Design for Task Manager App",
         desc: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. ",
         tags: ["React", "Node", "MongoDB"],
         time: "2 days ago",
         status: "Working",
         image: "https://cdn.dribbble.com/userupload/3800319/file/original-54a969b772fca3ef0ec9b3b39f0f1b48.jpg?compress=1&resize=450x338&vertical=top",
         members: [
-            { name: "John", image: "https://source.unsplash.com/random" },
-            { name: "John", image: "https://source.unsplash.com/random" },
+            { name: "John", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTUB8kqGZ74kvQczb_fL00a6LecB331zRp5SQ&usqp=CAU" },
+            { name: "John", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTal_yVhjVwOho5Ck1i0mqlutKZPxcOsRfIBg&usqp=CAU" },
             { name: "John", image: "https://source.unsplash.com/random" },
         ],
     },

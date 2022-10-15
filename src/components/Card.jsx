@@ -1,7 +1,8 @@
 import React from "react";
 import { Fragment, useState, useRef } from "react";
 import styled from "styled-components";
-import { DateRangeRounded, MoreHoriz } from "@mui/icons-material";
+import { MoreHoriz, TimelapseRounded } from "@mui/icons-material";
+import { LinearProgress } from "@mui/material";
 import { useDrag, useDrop } from "react-dnd";
 import ITEM_TYPE from "../data/types";
 import { tagColors } from "../data/data";
@@ -16,30 +17,56 @@ const Container = styled.div`
   background-color: ${({ theme }) => theme.card};
   color: ${({ theme }) => theme.text};
   cursor: pointer;
+  box-shadow: 0 0 16px 0 rgba(0, 0, 0, 0.09);
+  &:hover {
+    transition: all 0.6s ease-in-out;
+    box-shadow: 0 0 18px 0 rgba(0, 0, 0, 0.5);
+  }
 `;
 
 const Image = styled.img`
-  height: 140px;
+  height: 150px;
   width: 100%;
   object-fit: cover;
   border-radius: 10px;
+  margin-top: 1px;
+  margin-bottom: 8px;
+`;
+
+const Top = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
 
 const Title = styled.div`
   font-size: 17px;
   font-weight: 500;
   color: ${({ theme }) => theme.textSoft};
-  margin-top: 12px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  margin-top: 6px;
+  flex: 7;
+  line-height: 1.5;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* number of lines to show */
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
 `;
+
 
 const Desc = styled.div`
   font-size: 14px;
   font-weight: 400;
   color: ${({ theme }) => theme.soft2};
   margin-top: 8px;
+  line-height: 1.5;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 5; /* number of lines to show */
+  line-clamp: 5;
+  -webkit-box-orient: vertical;
 `;
 
 const Tags = styled.div`
@@ -47,14 +74,14 @@ const Tags = styled.div`
   flex-wrap: wrap;
   flex-direction: row;
   gap: 6px;
-  margin-top: 12px;
+  margin-top: 14px;
 `;
 
 const Tag = styled.div`
   padding: 4px 10px;
   border-radius: 8px;
-  color: ${({tagColor}) => tagColor+"99"};
-  border: 1px solid ${({tagColor}) => tagColor+"99"};
+  color: ${({ tagColor }) => tagColor + "99"};
+  border: 1px solid ${({ tagColor }) => tagColor + "99"};
   font-size: 12px;
   font-weight: 500;
 `;
@@ -63,7 +90,7 @@ const Bottom = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 16px 8px;
+  margin: 16px 0px;
 `;
 
 const Time = styled.div`
@@ -71,24 +98,25 @@ const Time = styled.div`
   align-items: center;
   gap: 8px;
   font-size: 14px;
-  font-weight: 600;
-  color: ${({ theme }) => theme.soft2};
+  font-weight: 500;
+  color: ${({ theme }) => theme.soft2 + "99"};
 `;
 
 const AvatarGroup = styled.div`
   display: flex;
   align-items: center;
+  margin-right: 12px;
 `;
 
 const Avatar = styled.img`
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
-  margin-right: -10px;
-  border: 0.5px solid #fff;
+  margin-right: -12px;
+  border: 3px solid ${({ theme }) => theme.bgLighter};
 `;
 
-const Card = ({tagColor, item, index, status }) => {
+const Card = ({ tagColor, item, index, status }) => {
   const ref = useRef(null);
 
   /*const [, drop] = useDrop({
@@ -132,28 +160,34 @@ const Card = ({tagColor, item, index, status }) => {
 
   return (
     <Fragment>
-      <Container
-        ref={ref}
-        className={"item"}
-      >
+      <Container ref={ref} className={"item"}>
         {item.image && <Image src={item.image} />}
-        <Title>
-          {item.title}
-          <MoreHoriz />
-        </Title>
+        <Top>
+          <Title>{item.title}</Title>
+          <MoreHoriz style={{flex: '1'}}/>
+        </Top>
         <Desc>{item.desc}</Desc>
         <Tags>
           {item.tags.map((tag) => (
-            <Tag tagColor={tagColors[Math.floor(Math.random() * tagColors.length)]}>{tag}</Tag>
+            <Tag
+              tagColor={tagColors[Math.floor(Math.random() * tagColors.length)]}
+            >
+              {tag}
+            </Tag>
           ))}
         </Tags>
         <Bottom>
           <Time>
-            <DateRangeRounded /> {item.time}
+            <TimelapseRounded /> Updated {item.time}
           </Time>
           <AvatarGroup>
             {item.members.map((member) => (
-              <Avatar src={member.image} />
+              <Avatar
+                tagColor={
+                  tagColors[Math.floor(Math.random() * tagColors.length)]
+                }
+                src={member.image}
+              />
             ))}
           </AvatarGroup>
 

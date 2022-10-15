@@ -13,11 +13,12 @@ const Column = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  margin: 12px 0px;
 `;
 const ItemWrapper = styled.div`
   width: 100%;
   height: 100%;
-  padding: 10px;
+  padding: 4px;
   text-align: left;
   margin: 2px;
   font-size: 16px;
@@ -28,11 +29,11 @@ const ItemWrapper = styled.div`
 const Span = styled.span`
   color: ${({ theme }) => theme.soft2};
   font-weight: 400;
-  margin-left: 6px;
+  margin-left: 8px;
 `;
 
 const Wrapper = styled.div`
-  padding: 6px;
+  padding: 12px 6px;
 `;
 
 const Projects = () => {
@@ -44,7 +45,7 @@ const Projects = () => {
     setItems((prevState) => {
       const newItems = prevState
         .filter((i) => i.id !== item.id)
-        .concat({ ...item, status});
+        .concat({ ...item, status });
       return [...newItems];
     });
   };
@@ -64,19 +65,23 @@ const Projects = () => {
         {statuses.map((s) => {
           return (
             <ItemWrapper key={statuses}>
-              {s.status} <Span>(0)</Span>
+              {s.icon} {s.status} 
+              <Span>
+                ({data.filter((item) => item.status == s.status).length})
+              </Span>
               <Wrapper>
-              {data.filter((item) => item.status == s.status)
-                    .map((item, idx) => (
-                      <Item
-                        key={item}
-                        item={item}
-                        index={idx}
-                        status={s}
-                        tagColor={tagColors[3]}
-                      />
-                    ))}
-                    {/*<DropWrapper onDrop={onDrop} status={s.status}> 
+                {data
+                  .filter((item) => item.status == s.status)
+                  .map((item, idx) => (
+                    <Item
+                      key={item}
+                      item={item}
+                      index={idx}
+                      status={s}
+                      tagColor={tagColors[3]}
+                    />
+                  ))}
+                {/*<DropWrapper onDrop={onDrop} status={s.status}> 
                   
               
                     </DropWrapper>*/}

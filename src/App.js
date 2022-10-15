@@ -32,15 +32,15 @@ const Wrapper = styled.div`
 
 function App() {
   const [darkMode, setDarkMode] = useState(true);
+  const [menuOpen, setMenuOpen] = useState(false);
   return (
     <DndProvider backend={HTML5Backend}>
       <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
         <Container>
           <BrowserRouter>
-            <Menu darkMode={darkMode} setDarkMode={setDarkMode} />
+          {menuOpen && <Menu setMenuOpen={setMenuOpen} setDarkMode={setDarkMode} darkMode={darkMode}/>}
             <Main>
-
-              <Navbar />
+              <Navbar menuOpen={menuOpen} setMenuOpen={setMenuOpen}/>
               <Wrapper>
                 <Routes>
                   <Route path="/">
