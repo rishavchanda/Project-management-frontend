@@ -54,7 +54,6 @@ const Title = styled.div`
   -webkit-box-orient: vertical;
 `;
 
-
 const Desc = styled.div`
   font-size: 14px;
   font-weight: 400;
@@ -67,6 +66,20 @@ const Desc = styled.div`
   -webkit-line-clamp: 5; /* number of lines to show */
   line-clamp: 5;
   -webkit-box-orient: vertical;
+`;
+
+const Progress = styled.div`
+position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+  margin-bottom: 8px;
+  background-color: ${({ theme }) => theme.soft2};
+`;
+
+const progresBar = styled(LinearProgress)`
+  background-color: ${({ theme }) => theme.soft2};
 `;
 
 const Tags = styled.div`
@@ -164,7 +177,7 @@ const Card = ({ tagColor, item, index, status }) => {
         {item.image && <Image src={item.image} />}
         <Top>
           <Title>{item.title}</Title>
-          <MoreHoriz style={{flex: '1'}}/>
+          <MoreHoriz style={{ flex: "1" }} />
         </Top>
         <Desc>{item.desc}</Desc>
         <Tags>
@@ -189,6 +202,7 @@ const Card = ({ tagColor, item, index, status }) => {
                 src={member.image}
               />
             ))}
+            <Avatar />
           </AvatarGroup>
 
           {/*<AvatarGroup  size="sm" max={3}>
