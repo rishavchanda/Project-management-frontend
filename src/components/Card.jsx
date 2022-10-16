@@ -202,7 +202,6 @@ const Card = ({ tagColor, item, index, status }) => {
                 src={member.image}
               />
             ))}
-            <Avatar />
           </AvatarGroup>
 
           {/*<AvatarGroup  size="sm" max={3}>

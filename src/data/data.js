@@ -111,6 +111,11 @@ const tagColors = [
     "#20B2AA",
     "#AFEEEE",
     "#FFF0F5",
+    "#B5E4CA",
+    "#CABDFF",
+    "#B1E5FC",
+    "#FFBC99",
+    
 ]
 
 export  {  statuses, data , tagColors};
