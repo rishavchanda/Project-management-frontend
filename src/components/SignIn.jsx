@@ -2,6 +2,7 @@ import { CloseRounded, EmailRounded, Password, PasswordRounded, Person, Troubles
 import React, { useState, useMemo } from 'react'
 import styled from "styled-components";
 import Google from "../Images/google.svg"
+import { Modal } from "@mui/material";
 
 const Container = styled.div`
   width: 100%;
@@ -101,6 +102,7 @@ const Span = styled.span`
 const SignIn = ({setSignInOpen,setSignUpOpen}) => {
    // setSignUpOpen(false)
   return (
+    <Modal open={true} onClose={() => setSignInOpen(false)}>
     <Container>
       <Wrapper>
         <CloseRounded style={{position: 'absolute', top: '24px', right: '30px', cursor: 'pointer'}} onClick={() => setSignInOpen(false)}/>
@@ -131,6 +133,7 @@ const SignIn = ({setSignInOpen,setSignUpOpen}) => {
         </LoginText>
       </Wrapper>
     </Container>
+    </Modal>
   );
 };
 

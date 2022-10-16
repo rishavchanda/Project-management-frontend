@@ -14,6 +14,7 @@ import Dashboard from './pages/Dashboard';
 import Projects from './pages/Projects';
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import ProjectDetails from './pages/ProjectDetails';
 
 const Container = styled.div`
   display: flex; 
@@ -25,9 +26,9 @@ const Main = styled.div`
 `;
 const Wrapper = styled.div`
   padding: 0% 1%;
-  height: 90vh;
+  height: 100vh;
   overflow-y: scroll !important;
-  scroll-behavior: smooth;
+  margin-top: 22px;
 `;
 
 function App() {
@@ -36,16 +37,19 @@ function App() {
   return (
     <DndProvider backend={HTML5Backend}>
       <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
-        <Container>
+        <Container >
           <BrowserRouter>
-          {menuOpen && <Menu setMenuOpen={setMenuOpen} setDarkMode={setDarkMode} darkMode={darkMode}/>}
+            {menuOpen && <Menu setMenuOpen={setMenuOpen} setDarkMode={setDarkMode} darkMode={darkMode} />}
             <Main>
-              <Navbar menuOpen={menuOpen} setMenuOpen={setMenuOpen}/>
+              <Navbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
               <Wrapper>
                 <Routes>
                   <Route path="/">
                     <Route index element={<Dashboard />} />
                     <Route path="projects" element={<Projects />} />
+                    <Route path="projects">
+                      <Route path=":id" element={<ProjectDetails/>} />
+                    </Route>
                     {/*<Route path="subscriptions" element={<Home type="sub" />}/>
               <Route path="signin" element={<SignIn />} />
               <Route path="video">
@@ -55,7 +59,7 @@ function App() {
                   </Route>
                 </Routes>
               </Wrapper>
-            </Main>
+            </Main>     
           </BrowserRouter>
         </Container>
       </ThemeProvider>

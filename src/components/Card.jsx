@@ -6,6 +6,7 @@ import { LinearProgress } from "@mui/material";
 import { useDrag, useDrop } from "react-dnd";
 import ITEM_TYPE from "../data/types";
 import { tagColors } from "../data/data";
+import { Link } from "react-router-dom";
 
 const Container = styled.div`
   padding: 14px 14px;
@@ -69,7 +70,7 @@ const Desc = styled.div`
 `;
 
 const Progress = styled.div`
-position: relative;
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -172,46 +173,44 @@ const Card = ({ tagColor, item, index, status }) => {
   //drag(drop(ref));
 
   return (
-    <Fragment>
-      <Container ref={ref} className={"item"}>
-        {item.image && <Image src={item.image} />}
-        <Top>
-          <Title>{item.title}</Title>
-          <MoreHoriz style={{ flex: "1" }} />
-        </Top>
-        <Desc>{item.desc}</Desc>
-        <Tags>
-          {item.tags.map((tag) => (
-            <Tag
-              tagColor={tagColors[Math.floor(Math.random() * tagColors.length)]}
-            >
-              {tag}
-            </Tag>
-          ))}
-        </Tags>
-        <Bottom>
-          <Time>
-            <TimelapseRounded /> Updated {item.time}
-          </Time>
-          <AvatarGroup>
-            {item.members.map((member) => (
-              <Avatar
+    <Link to={`/projects/${item.id}`} style={{ textDecoration: "none" }}>
+      <Fragment>
+        <Container ref={ref} className={"item"}>
+          {item.image && <Image src={item.image} />}
+          <Top>
+            <Title>{item.title}</Title>
+            <MoreHoriz style={{ flex: "1" }} />
+          </Top>
+          <Desc>{item.desc}</Desc>
+          <Tags>
+            {item.tags.map((tag) => (
+              <Tag
                 tagColor={
                   tagColors[Math.floor(Math.random() * tagColors.length)]
                 }
-                src={member.image}
-              />
+              >
+                {tag}
+              </Tag>
             ))}
-          </AvatarGroup>
-
-          {/*<AvatarGroup  size="sm" max={3}>
-            {item.members.map(([member) => (
-                <Avatar name={member.name} src={member.image} />
-            ))}
-            </AvatarGroup>*/}
-        </Bottom>
-      </Container>
-    </Fragment>
+          </Tags>
+          <Bottom>
+            <Time>
+              <TimelapseRounded /> Updated {item.time}
+            </Time>
+            <AvatarGroup>
+              {item.members.map((member) => (
+                <Avatar
+                  tagColor={
+                    tagColors[Math.floor(Math.random() * tagColors.length)]
+                  }
+                  src={member.image}
+                />
+              ))}
+            </AvatarGroup>
+          </Bottom>
+        </Container>
+      </Fragment>
+    </Link>
   );
 };
 

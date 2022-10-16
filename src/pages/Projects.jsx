@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import styled from "styled-components";
 import Item from "../components/Card";
 import DropWrapper from "../components/DropWrapper";
@@ -74,7 +74,7 @@ const Projects = () => {
                   .filter((item) => item.status == s.status)
                   .map((item, idx) => (
                     <Item
-                      key={item}
+                      key={idx}
                       item={item}
                       index={idx}
                       status={s}
