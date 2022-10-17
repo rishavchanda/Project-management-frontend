@@ -18,7 +18,7 @@ import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import SettingsBrightnessOutlinedIcon from "@mui/icons-material/SettingsBrightnessOutlined";
 import Diversity2Icon from '@mui/icons-material/Diversity2';
 import { Link} from "react-router-dom";
-import { Dashboard } from "@mui/icons-material";
+import { Dashboard, HubRounded, StreamRounded } from "@mui/icons-material";
 import { color } from "@mui/system";
 
 const Container = styled.div`
@@ -117,17 +117,17 @@ const Menu = ({ darkMode, setDarkMode, setMenuOpen }) => {
         </Link>
         <Link to="projects" style={{ textDecoration: "none", color: "inherit" }}>
           <Item>
-            <Diversity2Icon />
+            <HubRounded/>
             Projects
           </Item>
         </Link>
         <Link
-          to="subscriptions"
+          to="your-works"
           style={{ textDecoration: "none", color: "inherit" }}
         >
           <Item>
-            <SubscriptionsOutlinedIcon />
-            Subscriptions
+            <StreamRounded />
+            Your Works
           </Item>
         </Link>
         <Hr />

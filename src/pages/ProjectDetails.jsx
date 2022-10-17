@@ -3,9 +3,17 @@ import { Fragment, useState, useRef } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import { PersonAdd } from "@mui/icons-material";
+import {
+  Add,
+  AlignHorizontalLeft,
+  AlignVerticalTop,
+  CheckCircleOutlineOutlined,
+  DonutLarge,
+  PersonAdd,
+} from "@mui/icons-material";
 import { data } from "../data/data";
 import WorkCards from "../components/WorkCards";
+
 const Container = styled.div`
   padding: 14px 14px;
 `;
@@ -14,15 +22,15 @@ const Header = styled.div``;
 
 const Column = styled.div`
   display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  ${(props) =>
+    props.alignment ? "flex-direction: row;" : "flex-direction: column;"}
   margin: 12px 0px;
 `;
 
 const Title = styled.div`
   font-size: 24px;
   font-weight: 500;
-  color: ${({ theme }) => theme.textSoft};
+  color: ${({ theme }) => theme.text};
   margin-top: 6px;
   flex: 7;
   line-height: 1.5;
@@ -96,15 +104,86 @@ const Hr = styled.hr`
   border: 0.5px solid ${({ theme }) => theme.soft + "99"};
 `;
 
+const Body = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  gap: 20px;
+`;
+
+const Work = styled.div`
+  flex: 1 1 25%;
+`;
+
+const Allignment = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`;
+
+const ToggleButton = styled.div`
+  padding: 0px 16px;
+  height: 26px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid ${({ theme }) => theme.soft2};
+  color: ${({ theme }) => theme.soft2};
+  border-radius: 5px;
+  ${(props) => {
+    if (props.button == "row") {
+      return `border-radius: 5px 0px 0px 5px; border: 2px solid ${props.theme.soft2};`;
+    }
+    if (props.button == "col") {
+      return `border-radius: 0px 5px 5px 0px; border: 2px solid ${props.theme.soft2};`;
+    }
+  }}
+  ${(props) => {
+    if (props.alignment && props.button == "row") {
+      return `border-radius: 5px 0px 0px 5px; border: 2px solid ${
+        props.theme.primary
+      }; color: ${props.theme.primary}; background-color: ${
+        props.theme.primary + "11"
+      };`;
+    }
+    if (!props.alignment && props.button == "col") {
+      return `border-radius: 0px 5px 5px 0px; border: 2px solid ${
+        props.theme.primary
+      }; color: ${props.theme.primary}; background-color: ${
+        props.theme.primary + "11"
+      };`;
+    }
+  }}
+`;
+
 const ItemWrapper = styled.div`
   width: 100%;
   height: 100%;
-  padding: 4px;
+  padding: 4px 8px;
   text-align: left;
   margin: 2px;
   font-size: 16px;
   font-weight: 500;
   color: ${({ theme }) => theme.text};
+`;
+
+const Top = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  height: 30px;
+  margin-bottom: 4px;
+`;
+
+const Text = styled.div`
+  font-size: 16px;
+  font-weight: 500;
+  color: ${({ theme }) => theme.text};
+  display: flex;
+  align-items: center;
+  gap: 8px;
 `;
 
 const Span = styled.span`
@@ -114,26 +193,44 @@ const Span = styled.span`
 `;
 
 const Wrapper = styled.div`
-  padding: 12px 6px;
+  padding: 12px 0px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-gap: 12px;
 `;
 
-function ScrollToTopOnMount() {
-    useEffect(() => {
-      window.scrollTo(0, 0);
-    }, []);
-  
-    return null;
-  }
+const AddNewButton = styled.div`
+  padding: 5px;
+  background-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background-color: ${({ theme }) => theme.primary + "33"};
+  color: ${({ theme }) => theme.primary};
+  cursor: pointer;
+`;
+
+const HrHor = styled.div`
+  border: 0.5px solid${({ theme }) => theme.soft + "99"};
+`;
+
+const Extra = styled.div`
+  flex: 1;
+`;
 
 const ProjectDetails = () => {
   const { id } = useParams();
   const [item, setItems] = useState(data[0]);
   useEffect(() => {
+    window.scrollTo(0, 0);
     setItems(data[id - 1]);
   }, [id]);
+
+  const [alignment, setAlignment] = React.useState(true);
+
   return (
     <Container>
-        <ScrollToTopOnMount />
       <Header>
         <Title>{item.title}</Title>
         <Desc>{item.desc}</Desc>
@@ -150,17 +247,62 @@ const ProjectDetails = () => {
         </Members>
         <Hr />
       </Header>
-      <Column>
-        <ItemWrapper>
-          In Progress
-          <Span>(5)</Span>
-          <Wrapper>
-            <WorkCards />
-            <WorkCards />
-            <WorkCards />
-          </Wrapper>
-        </ItemWrapper>
-      </Column>
+      <Body>
+        <Work>
+          <Allignment>
+            <ToggleButton
+              alignment={alignment}
+              button={"row"}
+              onClick={() => setAlignment(true)}
+            >
+              <AlignVerticalTop sx={{ fontSize: "18px" }} />
+            </ToggleButton>
+            <ToggleButton
+              alignment={alignment}
+              button={"col"}
+              onClick={() => setAlignment(false)}
+            >
+              <AlignHorizontalLeft sx={{ fontSize: "18px" }} />
+            </ToggleButton>
+          </Allignment>
+          <Column alignment={alignment}>
+            <ItemWrapper>
+              <Top>
+                <Text>
+                  <DonutLarge sx={{ color: "#1976D2", fontSize: "20px" }} />
+                  In Progress
+                  <Span>(5)</Span>
+                </Text>
+                <AddNewButton>
+                  <Add />
+                </AddNewButton>
+              </Top>
+              <Wrapper alignment={alignment}>
+                <WorkCards />
+                <WorkCards />
+                <WorkCards />
+              </Wrapper>
+            </ItemWrapper>
+            <ItemWrapper>
+              <Top>
+                <Text>
+                  <CheckCircleOutlineOutlined
+                    sx={{ color: "#67BC6D", fontSize: "20px" }}
+                  />
+                  Completed
+                  <Span>(5)</Span>
+                </Text>
+              </Top>
+              <Wrapper alignment={alignment}>
+                <WorkCards />
+              </Wrapper>
+            </ItemWrapper>
+          </Column>
+        </Work>
+        <HrHor />
+        <Extra>
+        </Extra>
+      </Body>
     </Container>
   );
 };

@@ -16,9 +16,9 @@ const Container = styled.div`
   position: sticky;
   top: 0;
   height: 56px;
-  margin: 6px;
+  margin: 6px 6px 0px 6px;
   border-radius: 12px;
-  box-shadow: 0 0 16px 0 rgba(0, 0, 0, 0.04);
+  box-shadow: 0 0 16px 0 rgba(0, 0, 0, 0.06);
   background-color: ${({ theme }) => theme.bgLighter};
 `;
 const Wrapper = styled.div`

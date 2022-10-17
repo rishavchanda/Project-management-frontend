@@ -11,10 +11,9 @@ import { tagColors } from "../data/data";
 import { Link } from "react-router-dom";
 
 const Container = styled.div`
-  max-width: 250px;
   padding: 14px 14px;
   text-align: left;
-  margin: 12px 0px 18px 0px;
+  margin: 2px 0px;
   font-size: 16px;
   font-weight: 500;
   border-radius: 10px;

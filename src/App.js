@@ -26,9 +26,7 @@ const Main = styled.div`
 `;
 const Wrapper = styled.div`
   padding: 0% 1%;
-  height: 100vh;
   overflow-y: scroll !important;
-  margin-top: 22px;
 `;
 
 function App() {
