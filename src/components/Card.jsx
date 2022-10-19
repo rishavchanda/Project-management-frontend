@@ -95,7 +95,6 @@ const Tag = styled.div`
   padding: 4px 10px;
   border-radius: 8px;
   color: ${({ tagColor,theme }) => tagColor + theme.lightAdd};
-  border: 1px solid ${({ tagColor, theme }) => tagColor + theme.lightAdd};
   background-color: ${({ tagColor, theme }) => tagColor + "10"};
   font-size: 12px;
   font-weight: 500;

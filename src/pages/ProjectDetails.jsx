@@ -9,10 +9,13 @@ import {
   AlignVerticalTop,
   CheckCircleOutlineOutlined,
   DonutLarge,
+  Edit,
   PersonAdd,
 } from "@mui/icons-material";
 import { data } from "../data/data";
 import WorkCards from "../components/WorkCards";
+import MemberCard from "../components/MemberCard";
+import { IconButton } from "@mui/material";
 
 const Container = styled.div`
   padding: 14px 14px;
@@ -212,11 +215,48 @@ const AddNewButton = styled.div`
 `;
 
 const HrHor = styled.div`
-  border: 0.5px solid${({ theme }) => theme.soft + "99"};
+  border: 0.5px solid ${({ theme }) => theme.soft + "99"};
+`;
+
+const IcoBtn = styled(IconButton)`
+  color: ${({ theme }) => theme.textSoft} !important;
 `;
 
 const Extra = styled.div`
   flex: 1;
+`;
+
+const SubCards = styled.div`
+  padding: 10px 12px 18px 12px;
+  text-align: left;
+  margin: 12px 0px;
+  border-radius: 10px;
+  background-color: ${({ theme }) => theme.card + "99"};
+  color: ${({ theme }) => theme.text};
+  cursor: pointer;
+  box-shadow: 0 0 16px 0 rgba(0, 0, 0, 0.09);
+`;
+
+const SubCardTop = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 3px 4px;
+  color: ${({ theme }) => theme.text};
+  `;
+
+const SubCardsTitle = styled.div`
+  font-size: 18px;
+  font-weight: 500;
+  color: ${({ theme }) => theme.text};
+  line-height: 1.5;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* number of lines to show */
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
 `;
 
 const ProjectDetails = () => {
@@ -301,6 +341,24 @@ const ProjectDetails = () => {
         </Work>
         <HrHor />
         <Extra>
+          <SubCards>
+            <SubCardTop>
+              <SubCardsTitle>Members</SubCardsTitle>
+              <IcoBtn>
+                <Edit sx={{ fontSize: "16px" }} />
+              </IcoBtn>
+            </SubCardTop>
+            <MemberCard />
+            <MemberCard />
+            <MemberCard />
+            <MemberCard />
+          </SubCards>
+          <SubCards>
+            <SubCardsTitle>Tools</SubCardsTitle>
+          </SubCards>
+          <SubCards>
+            <SubCardsTitle>Idea List</SubCardsTitle>
+          </SubCards>
         </Extra>
       </Body>
     </Container>
