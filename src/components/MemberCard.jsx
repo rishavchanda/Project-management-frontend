@@ -3,15 +3,22 @@ import styled from "styled-components";
 import { tagColors } from "../data/data";
 
 const Container = styled.div`
-  padding: 4px 4px;
+  padding: 6px 4px;
   text-align: left;
   margin: 1px 0px;
   font-weight: 500;
   cursor: pointer;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+`;
+
+const Wrapper = styled.div`
+  display: flex;
+  align-items: center;
   gap: 12px;
 `;
+
 const Avatar = styled.img`
   width: 32px;
   height: 32px;
@@ -19,7 +26,7 @@ const Avatar = styled.img`
 `;
 
 const Details = styled.div`
-  gap: 2px;
+  gap: 4px;
 `;
 
 const Name = styled.div`
@@ -39,7 +46,7 @@ const Role = styled.div`
   font-weight: 500;
   padding: 4px 8px;
   border-radius: 12px;
-  color: ${({ tagColor,theme }) => tagColor + theme.lightAdd};
+  color: ${({ tagColor, theme }) => tagColor + theme.lightAdd};
   background-color: ${({ tagColor, theme }) => tagColor + "10"};
 `;
 
@@ -52,20 +59,22 @@ const Access = styled.div`
   background-color: ${({ theme }) => theme.soft2 + "33"};
 `;
 
-const MemberCard = () => {
+const MemberCard = ({ member }) => {
   return (
     <Container>
-      <Avatar src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTUB8kqGZ74kvQczb_fL00a6LecB331zRp5SQ&usqp=CAU" />
-      <Details>
-        <Name>Rishav Chanda</Name>
-        <EmailId>rishavchanda0@gmail.com</EmailId>
-      </Details>
-      <Role      
-      tagColor={
-        tagColors[Math.floor(Math.random() * tagColors.length)]
-      }
-      >Developer</Role>
-      <Access>Owner</Access>
+      <Wrapper>
+        <Avatar src={member.image} />
+        <Details>
+          <Name>{member.name}</Name>
+          <EmailId>{member.email}</EmailId>
+        </Details>
+        <Role
+          tagColor={tagColors[Math.floor(Math.random() * tagColors.length)]}
+        >
+          {member.role}
+        </Role>
+      </Wrapper>
+      <Access>{member.access}</Access>
     </Container>
   );
 };

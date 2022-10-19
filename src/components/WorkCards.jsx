@@ -1,7 +1,7 @@
 import React from "react";
 import { Fragment, useState, useRef } from "react";
 import styled from "styled-components";
-import { MoreHoriz, TimelapseRounded } from "@mui/icons-material";
+import { ImportantDevices, MoreHoriz, TimelapseRounded } from "@mui/icons-material";
 import LinearProgress, {
   linearProgressClasses,
 } from "@mui/material/LinearProgress";
@@ -34,7 +34,7 @@ const Top = styled.div`
 `;
 
 const Title = styled.div`
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 500;
   color: ${({ theme }) => theme.textSoft};
   margin-top: 6px;
@@ -79,7 +79,7 @@ const Text = styled.div`
 `;
 
 const Span = styled.span`
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   color: ${({ theme }) => theme.soft2};
   line-height: 1.5;
@@ -96,7 +96,7 @@ const Time = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
   color: ${({ theme }) => theme.soft2 + "99"};
 `;
@@ -131,7 +131,7 @@ const Card = ({ tagColor, item, index, status }) => {
           <Span>2/10</Span>
         </Text>
         <LinearProgress
-          sx={{ borderRadius: "10px", height: 5 }}
+          sx={{ borderRadius: "10px", height: 5,}}
           variant="determinate"
           value={20}
         />

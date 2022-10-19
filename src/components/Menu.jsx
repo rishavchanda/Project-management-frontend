@@ -1,25 +1,22 @@
 import React from "react";
 import { useState } from "react";
 import styled from "styled-components";
-import ExploreOutlinedIcon from "@mui/icons-material/ExploreOutlined";
-import SubscriptionsOutlinedIcon from "@mui/icons-material/SubscriptionsOutlined";
-import VideoLibraryOutlinedIcon from "@mui/icons-material/VideoLibraryOutlined";
-import HistoryOutlinedIcon from "@mui/icons-material/HistoryOutlined";
-import LibraryMusicOutlinedIcon from "@mui/icons-material/LibraryMusicOutlined";
-import SportsEsportsOutlinedIcon from "@mui/icons-material/SportsEsportsOutlined";
-import SportsBasketballOutlinedIcon from "@mui/icons-material/SportsBasketballOutlined";
-import MovieOutlinedIcon from "@mui/icons-material/MovieOutlined";
-import ArticleOutlinedIcon from "@mui/icons-material/ArticleOutlined";
-import LiveTvOutlinedIcon from "@mui/icons-material/LiveTvOutlined";
-import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import SettingsBrightnessOutlinedIcon from "@mui/icons-material/SettingsBrightnessOutlined";
-import Diversity2Icon from '@mui/icons-material/Diversity2';
-import { Link} from "react-router-dom";
-import { Dashboard, HubRounded, StreamRounded } from "@mui/icons-material";
-import { color } from "@mui/system";
+import Diversity2Icon from "@mui/icons-material/Diversity2";
+import { Link } from "react-router-dom";
+import {
+  Add,
+  Dashboard,
+  Groups2Rounded,
+  HubRounded,
+  Logout,
+  StreamRounded,
+  WorkspacesRounded,
+} from "@mui/icons-material";
+import { tagColors } from "../data/data";
 
 const Container = styled.div`
   flex: 1.3;
@@ -67,57 +64,50 @@ const Item = styled.div`
   }
 `;
 
-
 const Hr = styled.hr`
   margin: 15px 15px 15px 0px;
   border: 0.5px solid ${({ theme }) => theme.soft};
 `;
 
-const Login = styled.div`
-  padding: 0px 26px;
-`;
-const Button = styled.button`
-  padding: 5px 15px;
-  background-color: transparent;
-  border: 1px solid #3ea6ff;
-  color: #3ea6ff;
-  border-radius: 3px;
+const Title = styled.h2`
+  font-size: 15px;
   font-weight: 500;
-  margin-top: 10px;
-  cursor: pointer;
+  color: ${({ theme }) => theme.textSoft+"99"};
+  margin-bottom: 4px;
+  padding: 0px 26px;
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 12px;
 `;
 
-const Title = styled.h2`
-  font-size: 14px;
-  font-weight: 500;
-  color: ${({ theme }) => theme.textSoft};
-  margin-bottom: 20px;
-  padding: 0px 26px;
+const TeamIcon = styled(WorkspacesRounded)`
+  color: ${({ tagColor }) => tagColor};
+  font-size: 18px;
+  margin-left: 2px;
 `;
 
-
-const Menu = ({ darkMode, setDarkMode, setMenuOpen }) => {    
+const Menu = ({ darkMode, setDarkMode, setMenuOpen }) => {
   return (
     <Container setMenuOpen={setMenuOpen}>
-      <Link to="/" style={{ textDecoration: "none", color: "inherit"}}>
+      <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
         <Logo>
           <Image src="" />
           Brand Name
         </Logo>
       </Link>
       <ContainerWrapper>
-        <Link  to="/" style={{ textDecoration: "none", color: "inherit" }}>
+        <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
           <Item>
             <Dashboard />
             Dashboard
           </Item>
         </Link>
-        <Link to="projects" style={{ textDecoration: "none", color: "inherit" }}>
+        <Link
+          to="projects"
+          style={{ textDecoration: "none", color: "inherit" }}
+        >
           <Item>
-            <HubRounded/>
+            <HubRounded />
             Projects
           </Item>
         </Link>
@@ -131,30 +121,27 @@ const Menu = ({ darkMode, setDarkMode, setMenuOpen }) => {
           </Item>
         </Link>
         <Hr />
+        <Title><Groups2Rounded/> Teams</Title>
         <Item>
-          <VideoLibraryOutlinedIcon />
-          Library
+            <TeamIcon sx={{fontSize: '18px'}} tagColor={tagColors[3]}/>
+            Team Alpha
         </Item>
         <Item>
-          <HistoryOutlinedIcon />
-          History
+            <TeamIcon  sx={{fontSize: '18px'}} tagColor={tagColors[1]}/>
+            Zolo
+        </Item>
+        <Item>
+            <Add sx={{fontSize: '20px'}}/>
+            New Team
         </Item>
         <Hr />
-        <Item>
-          <SettingsOutlinedIcon />
-          Settings
-        </Item>
-        <Item>
-          <FlagOutlinedIcon />
-          Report
-        </Item>
-        <Item>
-          <HelpOutlineOutlinedIcon />
-          Help
-        </Item>
         <Item onClick={() => setDarkMode(!darkMode)}>
           <SettingsBrightnessOutlinedIcon />
           {darkMode ? "Light" : "Dark"} Mode
+        </Item>
+        <Item>
+          <Logout/>
+          Logout
         </Item>
         <Space />
       </ContainerWrapper>

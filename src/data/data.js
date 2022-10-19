@@ -118,4 +118,67 @@ const tagColors = [
     
 ]
 
-export  {  statuses, data , tagColors};
+const tools = [
+    {
+        name: "Slack",
+        icon: "https://cdn.worldvectorlogo.com/logos/slack-1.svg",
+    },
+    {
+        name: "Figma",
+        icon: "https://cdn.worldvectorlogo.com/logos/figma-1.svg",
+    },
+    {
+        name: "Adobe XD",
+        icon: "https://cdn.worldvectorlogo.com/logos/adobe-xd.svg",
+    },
+    {
+        name: "Adobe Photoshop",
+        icon: "https://cdn.worldvectorlogo.com/logos/photoshop-cc-4.svg",
+    },
+    {
+        name: "Github",
+        icon: "https://cdn.worldvectorlogo.com/logos/github-icon.svg",
+    },
+    {
+        name: "GitLab",
+        icon: "https://cdn-icons-png.flaticon.com/512/5968/5968853.png",
+    },
+    {
+        name: "Bitbucket",
+        icon: "https://cdn.worldvectorlogo.com/logos/bitbucket.svg",
+    },
+]
+
+const members = [
+    {
+        name: "John Abharim",
+        email: "john123@gmail.com",
+        role: "Manager",
+        access: "Owner",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTUB8kqGZ74kvQczb_fL00a6LecB331zRp5SQ&usqp=CAU",
+    },
+    {
+        name: "John Abharim",
+        email: "john123@gmail.com",
+        role: "Developer",
+        access: "Editor",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTUB8kqGZ74kvQczb_fL00a6LecB331zRp5SQ&usqp=CAU",
+    },
+    {
+        name: "John Abharim",
+        email: "john123@gmail.com",
+        role: "Designer",
+        access: "View Only",
+        image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTUB8kqGZ74kvQczb_fL00a6LecB331zRp5SQ&usqp=CAU",
+    }, 
+]
+
+const ideas = [
+    "Lorem ipsum dolor sit amet, adipiscing elit. ",
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. ",
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. ",
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. ",
+]
+
+
+export  {  statuses, data , tagColors, tools, members, ideas  };

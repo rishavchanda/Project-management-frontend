@@ -12,10 +12,12 @@ import {
   Edit,
   PersonAdd,
 } from "@mui/icons-material";
-import { data } from "../data/data";
+import { data, tools, members,ideas,tagColors } from "../data/data";
 import WorkCards from "../components/WorkCards";
 import MemberCard from "../components/MemberCard";
 import { IconButton } from "@mui/material";
+import ToolsCard from "../components/ToolsCard";
+import IdeaCard from "../components/IdeaCard";
 
 const Container = styled.div`
   padding: 14px 14px;
@@ -59,6 +61,25 @@ const Desc = styled.div`
   line-clamp: 2;
   -webkit-box-orient: vertical;
 `;
+
+
+const Tags = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  gap: 6px;
+  margin-top: 14px;
+`;
+
+const Tag = styled.div`
+  padding: 4px 10px;
+  border-radius: 8px;
+  color: ${({ tagColor,theme }) => tagColor + theme.lightAdd};
+  background-color: ${({ tagColor, theme }) => tagColor + "10"};
+  font-size: 12px;
+  font-weight: 500;
+`;
+
 
 const Members = styled.div`
   display: flex;
@@ -115,7 +136,7 @@ const Body = styled.div`
 `;
 
 const Work = styled.div`
-  flex: 1 1 25%;
+  flex: 1.6;
 `;
 
 const Allignment = styled.div`
@@ -244,7 +265,7 @@ const SubCardTop = styled.div`
   align-items: center;
   padding: 3px 4px;
   color: ${({ theme }) => theme.text};
-  `;
+`;
 
 const SubCardsTitle = styled.div`
   font-size: 18px;
@@ -257,6 +278,24 @@ const SubCardsTitle = styled.div`
   -webkit-line-clamp: 2; /* number of lines to show */
   line-clamp: 2;
   -webkit-box-orient: vertical;
+`;
+
+const Tools = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 8px 8px;
+`;
+
+const Ideas = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 8px 8px;
 `;
 
 const ProjectDetails = () => {
@@ -274,6 +313,17 @@ const ProjectDetails = () => {
       <Header>
         <Title>{item.title}</Title>
         <Desc>{item.desc}</Desc>
+        <Tags>
+            {item.tags.map((tag) => (
+              <Tag
+                tagColor={
+                  tagColors[Math.floor(Math.random() * tagColors.length)]
+                }
+              >
+                {tag}
+              </Tag>
+            ))}
+          </Tags>
         <Members>
           <AvatarGroup>
             {item.members.map((member) => (
@@ -348,16 +398,35 @@ const ProjectDetails = () => {
                 <Edit sx={{ fontSize: "16px" }} />
               </IcoBtn>
             </SubCardTop>
-            <MemberCard />
-            <MemberCard />
-            <MemberCard />
-            <MemberCard />
+            {members.map((member) => (
+              <MemberCard member={member} />
+            ))}
           </SubCards>
           <SubCards>
-            <SubCardsTitle>Tools</SubCardsTitle>
+            <SubCardTop>
+              <SubCardsTitle>Tools</SubCardsTitle>
+              <IcoBtn>
+                <Add sx={{ fontSize: "20px" }} />
+              </IcoBtn>
+            </SubCardTop>
+            <Tools>
+              {tools.map((tool) => (
+                <ToolsCard tool={tool} />
+              ))}
+            </Tools>
           </SubCards>
           <SubCards>
-            <SubCardsTitle>Idea List</SubCardsTitle>
+            <SubCardTop>
+              <SubCardsTitle>Idea List</SubCardsTitle>
+              <IcoBtn>
+                <Add sx={{ fontSize: "20px" }} />
+              </IcoBtn>
+            </SubCardTop>
+            <Ideas>
+              {ideas.map((i,id) => (
+                <IdeaCard idea={i} no={id} key={id}/>
+              ))}
+            </Ideas>
           </SubCards>
         </Extra>
       </Body>
