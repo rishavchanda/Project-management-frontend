@@ -15,6 +15,7 @@ import Projects from './pages/Projects';
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import ProjectDetails from './pages/ProjectDetails';
+import Teams from './pages/Teams';
 
 const Container = styled.div`
   display: flex; 
@@ -45,8 +46,11 @@ function App() {
                   <Route path="/">
                     <Route index element={<Dashboard />} />
                     <Route path="projects" element={<Projects />} />
+                    <Route path="teams">
+                      <Route path=":id" element={<Teams />} />
+                    </Route>
                     <Route path="projects">
-                      <Route path=":id" element={<ProjectDetails/>} />
+                      <Route path=":id" element={<ProjectDetails />} />
                     </Route>
                     {/*<Route path="subscriptions" element={<Home type="sub" />}/>
               <Route path="signin" element={<SignIn />} />
@@ -57,7 +61,7 @@ function App() {
                   </Route>
                 </Routes>
               </Wrapper>
-            </Main>     
+            </Main>
           </BrowserRouter>
         </Container>
       </ThemeProvider>

@@ -72,7 +72,7 @@ const Hr = styled.hr`
 const Title = styled.h2`
   font-size: 15px;
   font-weight: 500;
-  color: ${({ theme }) => theme.textSoft+"99"};
+  color: ${({ theme }) => theme.textSoft + "99"};
   margin-bottom: 4px;
   padding: 0px 26px;
   display: flex;
@@ -121,18 +121,30 @@ const Menu = ({ darkMode, setDarkMode, setMenuOpen }) => {
           </Item>
         </Link>
         <Hr />
-        <Title><Groups2Rounded/> Teams</Title>
-        <Item>
-            <TeamIcon sx={{fontSize: '18px'}} tagColor={tagColors[3]}/>
-            Team Alpha
-        </Item>
-        <Item>
-            <TeamIcon  sx={{fontSize: '18px'}} tagColor={tagColors[1]}/>
+        <Title>
+          <Groups2Rounded /> Teams
+        </Title>
+        <Link
+          to="/teams/team-alpha"
+          style={{ textDecoration: "none", color: "inherit" }}
+        >
+          <Item>
+            <TeamIcon sx={{ fontSize: "18px" }} tagColor={tagColors[3]} />
+            Team Alpha 
+          </Item>
+        </Link>
+        <Link
+          to="/teams/zolo"
+          style={{ textDecoration: "none", color: "inherit" }}
+        >
+          <Item>
+            <TeamIcon sx={{ fontSize: "18px" }} tagColor={tagColors[1]} />
             Zolo
-        </Item>
+          </Item>
+        </Link>
         <Item>
-            <Add sx={{fontSize: '20px'}}/>
-            New Team
+          <Add sx={{ fontSize: "20px" }} />
+          New Team
         </Item>
         <Hr />
         <Item onClick={() => setDarkMode(!darkMode)}>
@@ -140,7 +152,7 @@ const Menu = ({ darkMode, setDarkMode, setMenuOpen }) => {
           {darkMode ? "Light" : "Dark"} Mode
         </Item>
         <Item>
-          <Logout/>
+          <Logout />
           Logout
         </Item>
         <Space />
