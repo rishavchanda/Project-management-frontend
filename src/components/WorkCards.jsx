@@ -1,7 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Fragment, useState, useRef } from "react";
 import styled from "styled-components";
-import { ImportantDevices, MoreHoriz, TimelapseRounded } from "@mui/icons-material";
+import {
+  ImportantDevices,
+  MoreHoriz,
+  TimelapseRounded,
+} from "@mui/icons-material";
 import LinearProgress, {
   linearProgressClasses,
 } from "@mui/material/LinearProgress";
@@ -9,6 +13,7 @@ import { useDrag, useDrop } from "react-dnd";
 import ITEM_TYPE from "../data/types";
 import { tagColors } from "../data/data";
 import { Link } from "react-router-dom";
+import { color } from "@mui/system";
 
 const Container = styled.div`
   padding: 14px 14px;
@@ -116,11 +121,17 @@ const Avatar = styled.img`
 `;
 
 const Card = ({ tagColor, item, index, status }) => {
+  const [color, setColor] = useState("primary");
+  useEffect(() => {
+    if (status === "Completed") {
+      setColor("success");
+    }
+  }, [status]);
   return (
     <Container className={"item"}>
       <Top>
         <Title>Works</Title>
-        <MoreHoriz style={{ flex: "1"}} />
+        <MoreHoriz style={{ flex: "1" }} />
       </Top>
       <Desc>
         Some work details task Some work details taskSome work details task
@@ -131,9 +142,10 @@ const Card = ({ tagColor, item, index, status }) => {
           <Span>2/10</Span>
         </Text>
         <LinearProgress
-          sx={{ borderRadius: "10px", height: 5,}}
+          sx={{ borderRadius: "10px", height: 5 }}
           variant="determinate"
           value={20}
+          color={color}
         />
       </Progress>
       <Bottom>

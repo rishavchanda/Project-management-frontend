@@ -368,9 +368,9 @@ const ProjectDetails = () => {
                 </AddNewButton>
               </Top>
               <Wrapper alignment={alignment}>
-                <WorkCards />
-                <WorkCards />
-                <WorkCards />
+                <WorkCards status="In Progress"/>
+                <WorkCards status="In Progress"/>
+                <WorkCards status="In Progress"/>
               </Wrapper>
             </ItemWrapper>
             <ItemWrapper>
@@ -384,7 +384,7 @@ const ProjectDetails = () => {
                 </Text>
               </Top>
               <Wrapper alignment={alignment}>
-                <WorkCards />
+                <WorkCards status="Completed"/>
               </Wrapper>
             </ItemWrapper>
           </Column>
