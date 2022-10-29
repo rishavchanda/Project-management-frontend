@@ -17,6 +17,7 @@ import {
   WorkspacesRounded,
 } from "@mui/icons-material";
 import { tagColors } from "../data/data";
+import LogoIcon from "../Images/Logo.svg";
 
 const Container = styled.div`
   flex: 1.3;
@@ -33,7 +34,7 @@ const Container = styled.div`
 const ContainerWrapper = styled.div`
   height: 90%;
   overflow-y: scroll !important;
-  margin-top: 22px;
+  margin-top: 0px;
 `;
 const Space = styled.div`
   height: 50px;
@@ -42,14 +43,14 @@ const Logo = styled.div`
   color: ${({ theme }) => theme.text};
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 2px;
   font-weight: bold;
   margin-bottom: 16px;
-  padding: 16px 26px 0px 26px;
   font-size: 20px;
+  padding: 22px 0px 0px 24px;
 `;
 const Image = styled.img`
-  height: 25px;
+  height: 22px;
 `;
 
 const Item = styled.div`
@@ -91,8 +92,8 @@ const Menu = ({ darkMode, setDarkMode, setMenuOpen }) => {
     <Container setMenuOpen={setMenuOpen}>
       <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
         <Logo>
-          <Image src="" />
-          Brand Name
+          <Image src={LogoIcon} />
+          VEXA
         </Logo>
       </Link>
       <ContainerWrapper>
