@@ -33,6 +33,7 @@ const Title = styled.div`
   font-weight: 500;
   color: ${({ theme }) => theme.textSoft};
 `;
+
 const Desc = styled.div`
   font-size: 11px;
   font-weight: 500;

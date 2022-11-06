@@ -12,6 +12,8 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { IconButton } from "@mui/material";
 import { MenuOpen, NotificationsRounded } from "@mui/icons-material";
 import Badge from "@mui/material/Badge";
+import { openSnackbar, closeSnackbar } from "../redux/snackbarSlice";
+import { useDispatch } from "react-redux";
 
 const Container = styled.div`
   position: sticky;
@@ -100,6 +102,7 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
   // const { currentUser } = useSelector((state) => state.user);
   const [SignUpOpen, setSignUpOpen] = useState(false);
   const [SignInOpen, setSignInOpen] = useState(false);
+  const dispatch = useDispatch();
   return (
     <>
       <Container>
@@ -112,6 +115,7 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
             <SearchIcon style={{ marginRight: "20px", marginLeft: "20px" }} />
           </Search>
           <User>
+            {/*
             <IcoButton>
               <Badge badgeContent={4} color="primary">
                 <NotificationsRounded />
@@ -134,12 +138,15 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
                 />
               </Badge>
             </IcoButton>
+            */}
 
-            {/*
-            <Button onClick={() => setSignInOpen(true)}>
+            <Button
+              onClick={() => 
+              setSignInOpen(true)
+            }
+            >
               <AccountCircleOutlinedIcon /> Sign In
             </Button>
-            */}
           </User>
         </Wrapper>
       </Container>

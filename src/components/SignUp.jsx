@@ -10,6 +10,13 @@ import React, { useState, useMemo } from "react";
 import styled from "styled-components";
 import Google from "../Images/google.svg";
 import { Modal } from "@mui/material";
+import { loginFailure, loginStart, loginSuccess } from "../redux/userSlice";
+import { openSnackbar, closeSnackbar } from "../redux/snackbarSlice";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { api } from "../api";
+import ToastMessage from "./ToastMessage";
 
 const Container = styled.div`
   width: 100%;
@@ -113,6 +120,38 @@ const Span = styled.span`
 `;
 
 const SignUp = ({ setSignUpOpen, setSignInOpen }) => {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    dispatch(loginStart());
+    try {
+      const res = await axios.post(`http://localhost:8800/api/auth/signin`, { email, password });
+      console.log(res.data);
+      dispatch(loginSuccess(res.data));
+    } catch (err) {
+      dispatch(loginFailure());
+    } 
+  };
+
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+    dispatch(loginStart());
+    try {
+      const res = await axios.post(`http://localhost:8800/api/auth/signup`, { name, email, password });
+      console.log(res.data);
+      dispatch(loginSuccess(res.data));
+      dispatch(openSnackbar({ message: res.data.message, type: "success" }));
+      setSignUpOpen(false)
+    } catch (err) {
+      dispatch(loginFailure());
+    }
+  };
+
   //ssetSignInOpen(false)
   return (
     <Modal open={true} onClose={() => setSignInOpen(false)}>
@@ -142,20 +181,33 @@ const SignUp = ({ setSignUpOpen, setSignInOpen }) => {
           </Divider>
           <OutlinedBox style={{ marginTop: "24px" }}>
             <Person style={{ paddingRight: "12px" }} />
-            <TextInput placeholder="Full Name" type="text" />
+            <TextInput
+              placeholder="Full Name"
+              type="text"
+              onChange={(e) => setName(e.target.value)}
+            />
           </OutlinedBox>
           <OutlinedBox>
             <EmailRounded style={{ paddingRight: "12px" }} />
-            <TextInput placeholder="Email Id" type="email" />
+            <TextInput
+              placeholder="Email Id"
+              type="email"
+              onChange={(e) => setEmail(e.target.value)}
+            />
           </OutlinedBox>
           <OutlinedBox>
             <PasswordRounded style={{ paddingRight: "12px" }} />
-            <TextInput placeholder="Password" type="password" />
+            <TextInput
+              type="password"
+              placeholder="password"
+              onChange={(e) => setPassword(e.target.value)}
+            />
           </OutlinedBox>
           <OutlinedBox
             button={true}
             activeButton={true}
             style={{ marginTop: "6px" }}
+            onClick={handleSignUp}
           >
             Create Account
           </OutlinedBox>
@@ -176,7 +228,7 @@ const SignUp = ({ setSignUpOpen, setSignInOpen }) => {
             </Span>
           </LoginText>
         </Wrapper>
-      </Container>
+      </Container>      
     </Modal>
   );
 };

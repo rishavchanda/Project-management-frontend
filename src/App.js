@@ -16,6 +16,8 @@ import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
 import ProjectDetails from './pages/ProjectDetails';
 import Teams from './pages/Teams';
+import ToastMessage from './components/ToastMessage';
+import { useSelector } from "react-redux";
 
 const Container = styled.div`
   display: flex; 
@@ -33,6 +35,9 @@ const Wrapper = styled.div`
 function App() {
   const [darkMode, setDarkMode] = useState(true);
   const [menuOpen, setMenuOpen] = useState(true);
+  const { open, message, severity } = useSelector((state) => state.snackbar);
+
+
   return (
     <DndProvider backend={HTML5Backend}>
       <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
@@ -64,6 +69,7 @@ function App() {
             </Main>
           </BrowserRouter>
         </Container>
+        {open && <ToastMessage open={open} message={message} severity={severity} />}
       </ThemeProvider>
     </DndProvider>
   );
