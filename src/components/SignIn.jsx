@@ -17,6 +17,8 @@ import { openSnackbar, closeSnackbar } from "../redux/snackbarSlice";
 import { useDispatch } from "react-redux";
 import axios from "axios";
 import validator from "validator";
+import { auth, provider } from "../firebase";
+import { signInWithPopup } from "firebase/auth";
 
 const Container = styled.div`
   width: 100%;
@@ -207,6 +209,49 @@ const SignIn = ({ setSignInOpen, setSignUpOpen }) => {
     }
   };
 
+  //Google SignIn
+  const handleGoogleLogin = async () => {
+    dispatch(loginStart());
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        axios
+          .post("http://localhost:8800/api/auth/google", {
+            name: result.user.displayName,
+            email: result.user.email,
+            img: result.user.photoURL,
+          })
+          .then((res) => {
+            if (res.status === 200) {
+              dispatch(loginSuccess(res.data));
+              setSignInOpen(false);
+              dispatch(
+                openSnackbar({
+                  message: "Logged In Successfully",
+                  severity: "success",
+                })
+              );
+            } else {
+              dispatch(loginFailure(res.data));
+              dispatch(
+                openSnackbar({
+                  message: res.data.message,
+                  severity: "error",
+                })
+              );
+            }
+          });
+      })
+      .catch((err) => {
+        dispatch(loginFailure());
+        dispatch(
+          openSnackbar({
+            message: err.message,
+            severity: "error",
+          })
+        );
+      });
+  };
+
   // setSignUpOpen(false)
   return (
     <Modal open={true} onClose={() => setSignInOpen(false)}>
@@ -225,6 +270,7 @@ const SignIn = ({ setSignInOpen, setSignUpOpen }) => {
           <OutlinedBox
             googleButton={TroubleshootRounded}
             style={{ margin: "24px" }}
+            onClick={handleGoogleLogin}
           >
             <GoogleIcon src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/1000px-Google_%22G%22_Logo.svg.png?20210618182606" />
             Sign In with Google
