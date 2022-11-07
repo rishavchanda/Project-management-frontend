@@ -14,6 +14,7 @@ import { MenuOpen, NotificationsRounded } from "@mui/icons-material";
 import Badge from "@mui/material/Badge";
 import { openSnackbar, closeSnackbar } from "../redux/snackbarSlice";
 import { useDispatch } from "react-redux";
+import Avatar from "@mui/material/Avatar";
 
 const Container = styled.div`
   position: sticky;
@@ -91,7 +92,7 @@ const User = styled.div`
   color: ${({ theme }) => theme.text};
 `;
 
-const Avatar = styled.img`
+const avatar = styled.img`
   width: 34px;
   height: 34px;
   border-radius: 50%;
@@ -103,6 +104,7 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
   const [SignUpOpen, setSignUpOpen] = useState(false);
   const [SignInOpen, setSignInOpen] = useState(false);
   const dispatch = useDispatch();
+  const { currentUser } = useSelector((state) => state.user);
   return (
     <>
       <Container>
@@ -139,14 +141,37 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
               </Badge>
             </IcoButton>
             */}
-
-            <Button
-              onClick={() => 
-              setSignInOpen(true)
-            }
-            >
-              <AccountCircleOutlinedIcon /> Sign In
-            </Button>
+            {currentUser ? (
+              <>
+                <IcoButton>
+                  <Badge badgeContent={4} color="primary">
+                    <NotificationsRounded />
+                  </Badge>
+                </IcoButton>
+                <IcoButton>
+                  <Badge
+                    badgeContent="    "
+                    color="success"
+                    variant="dot"
+                    overlap="circular"
+                    anchorOrigin={{
+                      vertical: "bottom",
+                      horizontal: "right",
+                    }}
+                  >
+                    <Avatar
+                      src={currentUser.img}
+                      name={currentUser.name}
+                      sx={{ width: 34, height: 34 }}
+                    />
+                  </Badge>
+                </IcoButton>
+              </>
+            ) : (
+              <Button onClick={() => setSignInOpen(true)}>
+                <AccountCircleOutlinedIcon /> Sign In
+              </Button>
+            )}
           </User>
         </Wrapper>
       </Container>

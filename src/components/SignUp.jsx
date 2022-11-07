@@ -6,7 +6,7 @@ import {
   Person,
   TroubleshootRounded,
 } from "@mui/icons-material";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import styled from "styled-components";
 import Google from "../Images/google.svg";
 import { Modal } from "@mui/material";
@@ -15,8 +15,8 @@ import { openSnackbar, closeSnackbar } from "../redux/snackbarSlice";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { api } from "../api";
-import ToastMessage from "./ToastMessage";
+import CircularProgress from "@mui/material/CircularProgress";
+import validator from "validator";
 
 const Container = styled.div`
   width: 100%;
@@ -55,16 +55,19 @@ const OutlinedBox = styled.div`
   ${({ googleButton, theme }) =>
     googleButton &&
     `
+    user-select: none; 
   gap: 16px;`}
   ${({ button, theme }) =>
     button &&
     `
+    user-select: none; 
   border: none;
     background: ${theme.itemHover};
     color: '${theme.soft2}';`}
     ${({ activeButton, theme }) =>
     activeButton &&
     `
+    user-select: none; 
   border: none;
     background: ${theme.primary};
     color: white;`}
@@ -119,36 +122,114 @@ const Span = styled.span`
   color: ${({ theme }) => theme.primary};
 `;
 
+const Error = styled.div`
+  color: red;
+  font-size: 12px;
+  margin: 2px 26px 8px 26px;
+  display: block;
+  ${({ error, theme }) =>
+    error === "" &&
+    `    display: none;
+    `}
+`;
+
 const SignUp = ({ setSignUpOpen, setSignInOpen }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [Loading, setLoading] = useState(false);
+  const [disabled, setDisabled] = useState(true);
+  const [emailError, setEmailError] = useState("");
+  const [credentialError, setcredentialError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [passwordCorrect, setPasswordCorrect] = useState(false);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    dispatch(loginStart());
-    try {
-      const res = await axios.post(`http://localhost:8800/api/auth/signin`, { email, password });
-      console.log(res.data);
-      dispatch(loginSuccess(res.data));
-    } catch (err) {
-      dispatch(loginFailure());
-    } 
-  };
 
   const handleSignUp = async (e) => {
     e.preventDefault();
-    dispatch(loginStart());
-    try {
-      const res = await axios.post(`http://localhost:8800/api/auth/signup`, { name, email, password });
-      console.log(res.data);
-      dispatch(loginSuccess(res.data));
-      dispatch(openSnackbar({ message: res.data.message, type: "success" }));
-      setSignUpOpen(false)
-    } catch (err) {
-      dispatch(loginFailure());
+
+    if (!disabled) {
+      dispatch(loginStart());
+      setDisabled(true);
+      setLoading(true);
+      try {
+        const res = await axios.post(`http://localhost:8800/api/auth/signup`, {
+          name,
+          email,
+          password,
+        });
+        if (res.status === 200) {
+          dispatch(loginSuccess(res.data));
+          dispatch(
+            openSnackbar({ message: res.data.message, severity: "success" })
+          );
+          setLoading(false);
+          setDisabled(false);
+          setSignUpOpen(false);
+        } else {
+          dispatch(loginFailure());
+          setcredentialError(`Invalid Credentials : ${res.data.message}`);
+          setLoading(false);
+          setDisabled(false);
+        }
+      } catch (err) {
+        dispatch(loginFailure());
+        dispatch(
+          openSnackbar({
+            message: err.message,
+            severity: "error",
+          })
+        );
+      }
+    }
+    if (name === "" || email === "" || password === "") {
+      dispatch(
+        openSnackbar({
+          message: "Please fill all the fields",
+          severity: "error",
+        })
+      );
+    }
+  };
+
+  useEffect(() => {
+    if (name !== "" && validator.isEmail(email) && passwordCorrect) {
+      setDisabled(false);
+    } else {
+      setDisabled(true);
+    }
+  }, [name, email, passwordCorrect]);
+
+  const validateEmail = (e) => {
+    setEmail(e.target.value);
+    if (!validator.isEmail(email)) {
+      setEmailError("Enter a valid Email Id!");
+    } else {
+      setEmailError("");
+    }
+  };
+
+  const validatePassword = (e) => {
+    setPassword(e.target.value);
+    if (password.length < 8) {
+      setPasswordError("Password must be atleast 8 characters long!");
+      setPasswordCorrect(false);
+    } else if (password.length > 16) {
+      setPasswordError("Password must be less than 16 characters long!");
+      setPasswordCorrect(false);
+    } else if (
+      !password.match(/[a-z]/g) ||
+      !password.match(/[A-Z]/g) ||
+      !password.match(/[0-9]/g) ||
+      !password.match(/[^a-zA-Z\d]/g)
+    ) {
+      setPasswordCorrect(false);
+      setPasswordError(
+        "Password must contain atleast one lowercase, uppercase, number and special character!"
+      );
+    } else {
+      setPasswordError("");
+      setPasswordCorrect(true);
     }
   };
 
@@ -192,24 +273,31 @@ const SignUp = ({ setSignUpOpen, setSignInOpen }) => {
             <TextInput
               placeholder="Email Id"
               type="email"
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => validateEmail(e)}
             />
           </OutlinedBox>
+          <Error error={emailError}>{emailError}</Error>
           <OutlinedBox>
             <PasswordRounded style={{ paddingRight: "12px" }} />
             <TextInput
               type="password"
               placeholder="password"
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e) => validatePassword(e)}
             />
           </OutlinedBox>
+          <Error error={passwordError}>{passwordError}</Error>
+          <Error error={credentialError}>{credentialError}</Error>
           <OutlinedBox
             button={true}
-            activeButton={true}
+            activeButton={!disabled}
             style={{ marginTop: "6px" }}
             onClick={handleSignUp}
           >
-            Create Account
+            {Loading ? (
+              <CircularProgress color="inherit" size={20} />
+            ) : (
+              "Create Account"
+            )}
           </OutlinedBox>
           <LoginText>
             Already have an account ?
@@ -228,7 +316,7 @@ const SignUp = ({ setSignUpOpen, setSignInOpen }) => {
             </Span>
           </LoginText>
         </Wrapper>
-      </Container>      
+      </Container>
     </Modal>
   );
 };

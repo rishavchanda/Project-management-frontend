@@ -18,6 +18,10 @@ import {
 } from "@mui/icons-material";
 import { tagColors } from "../data/data";
 import LogoIcon from "../Images/Logo.svg";
+import axios from "axios";
+import { current } from "@reduxjs/toolkit";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../redux/userSlice";
 
 const Container = styled.div`
   flex: 1.3;
@@ -88,6 +92,12 @@ const TeamIcon = styled(WorkspacesRounded)`
 `;
 
 const Menu = ({ darkMode, setDarkMode, setMenuOpen }) => {
+  const dispatch = useDispatch()
+  const logoutUser = () => {
+    dispatch(logout())
+  }
+
+
   return (
     <Container setMenuOpen={setMenuOpen}>
       <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
@@ -152,8 +162,8 @@ const Menu = ({ darkMode, setDarkMode, setMenuOpen }) => {
           <SettingsBrightnessOutlinedIcon />
           {darkMode ? "Light" : "Dark"} Mode
         </Item>
-        <Item>
-          <Logout />
+        <Item onClick={()=>  logoutUser()}>
+          <Logout/>
           Logout
         </Item>
         <Space />

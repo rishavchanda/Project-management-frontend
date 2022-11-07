@@ -1,8 +1,22 @@
-import { CloseRounded, EmailRounded, Password, PasswordRounded, Person, TroubleshootRounded } from "@mui/icons-material";
-import React, { useState, useMemo } from 'react'
+import {
+  Block,
+  CloseRounded,
+  EmailRounded,
+  Password,
+  PasswordRounded,
+  Person,
+  TroubleshootRounded,
+} from "@mui/icons-material";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import Google from "../Images/google.svg"
+import Google from "../Images/google.svg";
 import { Modal } from "@mui/material";
+import CircularProgress from "@mui/material/CircularProgress";
+import { loginFailure, loginStart, loginSuccess } from "../redux/userSlice";
+import { openSnackbar, closeSnackbar } from "../redux/snackbarSlice";
+import { useDispatch } from "react-redux";
+import axios from "axios";
+import validator from "validator";
 
 const Container = styled.div`
   width: 100%;
@@ -32,19 +46,28 @@ const Title = styled.div`
   font-weight: 500;
   color: ${({ theme }) => theme.text};
   margin: 16px 28px;
-`
+`;
 const OutlinedBox = styled.div`
   height: 50px;
   border-radius: 12px;
   border: 1px solid ${({ theme }) => theme.soft2};
-  color: ${({ theme }) => theme.soft2};  
-  ${({googleButton,theme}) => googleButton && `
+  color: ${({ theme }) => theme.soft2};
+  ${({ googleButton, theme }) =>
+    googleButton &&
+    `
+    user-select: none; 
   gap: 16px;`}
-  ${({button,theme}) => button && `
+  ${({ button, theme }) =>
+    button &&
+    `
+    user-select: none; 
   border: none;
     background: ${theme.soft};
-    color: white;`}
-    ${({activeButton,theme}) => activeButton && `
+    color:'${theme.soft2}';`}
+    ${({ activeButton, theme }) =>
+    activeButton &&
+    `
+    user-select: none; 
   border: none;
     background: ${theme.primary};
     color: white;`}
@@ -53,12 +76,12 @@ const OutlinedBox = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  font-weight: 500;  
+  font-weight: 500;
   padding: 0px 14px;
-`
+`;
 const GoogleIcon = styled.img`
   width: 24px;
-`
+`;
 const Divider = styled.div`
   display: flex;
   display: flex;
@@ -67,24 +90,24 @@ const Divider = styled.div`
   color: ${({ theme }) => theme.soft};
   font-size: 18px;
   font-weight: 600;
-`
+`;
 const Line = styled.div`
   width: 80px;
   height: 1px;
   border-radius: 10px;
   margin: 0px 10px;
   background-color: ${({ theme }) => theme.soft};
-`
+`;
 
 const TextInput = styled.input`
-width: 100%;
-border: none;
-font-size: 16px;
-border-radius: 3px;
-background-color: transparent;
-outline: none;
-color: ${({ theme }) => theme.textSoft};
-`
+  width: 100%;
+  border: none;
+  font-size: 16px;
+  border-radius: 3px;
+  background-color: transparent;
+  outline: none;
+  color: ${({ theme }) => theme.textSoft};
+`;
 
 const LoginText = styled.div`
   font-size: 16px;
@@ -94,45 +117,171 @@ const LoginText = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-`
+`;
 const Span = styled.span`
   color: ${({ theme }) => theme.primary};
-  `
+`;
 
-const SignIn = ({setSignInOpen,setSignUpOpen}) => {
-   // setSignUpOpen(false)
+const Error = styled.div`
+  color: red;
+  font-size: 12px;
+  margin: 2px 26px 8px 26px;
+  display: block;
+  ${({ error, theme }) =>
+    error === "" &&
+    `    display: none;
+    `}
+`;
+
+const SignIn = ({ setSignInOpen, setSignUpOpen }) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [Loading, setLoading] = useState(false);
+  const [disabled, setDisabled] = useState(true);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (validator.isEmail(email) && password !== "") {
+      setDisabled(false);
+    } else {
+      setDisabled(true);
+    }
+  }, [email, password]);
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    if (!disabled) {
+      dispatch(loginStart());
+      setDisabled(true);
+      setLoading(true);
+      try {
+        const res = await axios.post(`http://localhost:8800/api/auth/signin`, {
+          email,
+          password,
+        });
+        if (res.status === 200) {
+          dispatch(loginSuccess(res.data));
+          setLoading(false);
+          setDisabled(false);
+          setSignInOpen(false);
+          dispatch(
+            openSnackbar({
+              message: "Logged In Successfully",
+              severity: "success",
+            })
+          );
+        } else {
+          dispatch(loginFailure(res.data));
+          setLoading(false);
+          setDisabled(false);
+          setcredentialError(`Invalid Credentials : ${res.data.message}`);
+        }
+      } catch (err) {
+        dispatch(loginFailure());
+        dispatch(
+          openSnackbar({
+            message: err.message,
+            severity: "error",
+          })
+        );
+      }
+    }
+    if (email === "" || password === "") {
+      dispatch(
+        openSnackbar({
+          message: "Please fill all the fields",
+          severity: "error",
+        })
+      );
+    }
+  };
+
+  const [emailError, setEmailError] = useState("");
+  const [credentialError, setcredentialError] = useState("");
+  const validateEmail = (e) => {
+    setEmail(e.target.value);
+    if (!validator.isEmail(email)) {
+      setEmailError("Enter a valid Email Id!");
+    } else {
+      setEmailError("");
+    }
+  };
+
+  // setSignUpOpen(false)
   return (
     <Modal open={true} onClose={() => setSignInOpen(false)}>
-    <Container>
-      <Wrapper>
-        <CloseRounded style={{position: 'absolute', top: '24px', right: '30px', cursor: 'pointer'}} onClick={() => setSignInOpen(false)}/>
-        <Title>Sign In</Title>
-        <OutlinedBox googleButton={TroubleshootRounded} style={{margin: '24px'}}>
-          <GoogleIcon src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/1000px-Google_%22G%22_Logo.svg.png?20210618182606"/>
-        Sign In with Google
-        </OutlinedBox>
-        <Divider>
-          <Line/>
-          or
-          <Line/>
-        </Divider>   
-        <OutlinedBox style={{marginTop: '24px'}}>
-          <EmailRounded style={{paddingRight: '12px'}}/>
-          <TextInput placeholder="Email Id" type="email"/>
-        </OutlinedBox>            
-        <OutlinedBox>
-          <PasswordRounded style={{paddingRight: '12px'}}/>
-          <TextInput placeholder="Password" type="password"/>
-        </OutlinedBox>                   
-        <OutlinedBox button={true} activeButton={true} style={{marginTop: '6px'}}>
-          Sign In
-        </OutlinedBox>
-        <LoginText>
-          Don't have an account ? 
-          <Span onClick={() => {setSignUpOpen(true); setSignInOpen(false)}} style={{fontWeight: '500', marginLeft: '6px', cursor: 'pointer'}}>Create Account</Span>
-        </LoginText>
-      </Wrapper>
-    </Container>
+      <Container>
+        <Wrapper>
+          <CloseRounded
+            style={{
+              position: "absolute",
+              top: "24px",
+              right: "30px",
+              cursor: "pointer",
+            }}
+            onClick={() => setSignInOpen(false)}
+          />
+          <Title>Sign In</Title>
+          <OutlinedBox
+            googleButton={TroubleshootRounded}
+            style={{ margin: "24px" }}
+          >
+            <GoogleIcon src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/1000px-Google_%22G%22_Logo.svg.png?20210618182606" />
+            Sign In with Google
+          </OutlinedBox>
+          <Divider>
+            <Line />
+            or
+            <Line />
+          </Divider>
+          <OutlinedBox style={{ marginTop: "24px" }}>
+            <EmailRounded style={{ paddingRight: "12px" }} />
+            <TextInput
+              placeholder="Email Id"
+              type="email"
+              onChange={(e) => validateEmail(e)}
+            />
+          </OutlinedBox>
+          <Error error={emailError}>{emailError}</Error>
+          <OutlinedBox>
+            <PasswordRounded style={{ paddingRight: "12px" }} />
+            <TextInput
+              placeholder="Password"
+              type="password"
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </OutlinedBox>
+          <Error error={credentialError}>{credentialError}</Error>
+          <OutlinedBox
+            button={true}
+            activeButton={!disabled}
+            style={{ marginTop: "6px" }}
+            onClick={handleLogin}
+          >
+            {Loading ? (
+              <CircularProgress color="inherit" size={20} />
+            ) : (
+              "Sign In"
+            )}
+          </OutlinedBox>
+          <LoginText>
+            Don't have an account ?
+            <Span
+              onClick={() => {
+                setSignUpOpen(true);
+                setSignInOpen(false);
+              }}
+              style={{
+                fontWeight: "500",
+                marginLeft: "6px",
+                cursor: "pointer",
+              }}
+            >
+              Create Account
+            </Span>
+          </LoginText>
+        </Wrapper>
+      </Container>
     </Modal>
   );
 };
