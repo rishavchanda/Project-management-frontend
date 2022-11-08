@@ -2,18 +2,18 @@ import {
   Block,
   CloseRounded,
   EmailRounded,
-  Password,
+  Visibility,
+  VisibilityOff,
   PasswordRounded,
-  Person,
   TroubleshootRounded,
 } from "@mui/icons-material";
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Google from "../Images/google.svg";
-import { Modal } from "@mui/material";
+import { IconButton, Modal } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import { loginFailure, loginStart, loginSuccess } from "../redux/userSlice";
-import { openSnackbar, closeSnackbar } from "../redux/snackbarSlice";
+import { openSnackbar } from "../redux/snackbarSlice";
 import { useDispatch } from "react-redux";
 import axios from "axios";
 import validator from "validator";
@@ -140,10 +140,16 @@ const SignIn = ({ setSignInOpen, setSignUpOpen }) => {
   const [password, setPassword] = useState("");
   const [Loading, setLoading] = useState(false);
   const [disabled, setDisabled] = useState(true);
+  const [values, setValues] = useState({
+    password: "",
+    showPassword: false,
+  });
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (validator.isEmail(email) && password !== "") {
+    if (email !== "")
+      validateEmail();
+    if (validator.isEmail(email) && password.length > 5) {
       setDisabled(false);
     } else {
       setDisabled(true);
@@ -172,8 +178,19 @@ const SignIn = ({ setSignInOpen, setSignUpOpen }) => {
               severity: "success",
             })
           );
+        } else if (res.status === 203) {
+          dispatch(loginFailure());
+          setLoading(false);
+          setDisabled(false);
+          setcredentialError(res.data.message);
+          dispatch(
+            openSnackbar({
+              message: "Account Not Verified",
+              severity: "error",
+            })
+          );
         } else {
-          dispatch(loginFailure(res.data));
+          dispatch(loginFailure());
           setLoading(false);
           setDisabled(false);
           setcredentialError(`Invalid Credentials : ${res.data.message}`);
@@ -200,12 +217,12 @@ const SignIn = ({ setSignInOpen, setSignUpOpen }) => {
 
   const [emailError, setEmailError] = useState("");
   const [credentialError, setcredentialError] = useState("");
-  const validateEmail = (e) => {
-    setEmail(e.target.value);
-    if (!validator.isEmail(email)) {
-      setEmailError("Enter a valid Email Id!");
-    } else {
+
+  const validateEmail = () => {
+    if (validator.isEmail(email)) {
       setEmailError("");
+    } else {
+      setEmailError("Enter a valid Email Id!");
     }
   };
 
@@ -285,7 +302,7 @@ const SignIn = ({ setSignInOpen, setSignUpOpen }) => {
             <TextInput
               placeholder="Email Id"
               type="email"
-              onChange={(e) => validateEmail(e)}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </OutlinedBox>
           <Error error={emailError}>{emailError}</Error>
@@ -293,9 +310,12 @@ const SignIn = ({ setSignInOpen, setSignUpOpen }) => {
             <PasswordRounded style={{ paddingRight: "12px" }} />
             <TextInput
               placeholder="Password"
-              type="password"
+              type={values.showPassword ? "text" : "password"}
               onChange={(e) => setPassword(e.target.value)}
             />
+            <IconButton color="inherit" onClick={() => setValues({ ...values, showPassword: !values.showPassword })}>
+              {values.showPassword ? <Visibility /> : <VisibilityOff />}
+            </IconButton>
           </OutlinedBox>
           <Error error={credentialError}>{credentialError}</Error>
           <OutlinedBox

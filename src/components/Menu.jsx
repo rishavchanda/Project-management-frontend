@@ -18,9 +18,7 @@ import {
 } from "@mui/icons-material";
 import { tagColors } from "../data/data";
 import LogoIcon from "../Images/Logo.svg";
-import axios from "axios";
-import { current } from "@reduxjs/toolkit";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { logout } from "../redux/userSlice";
 
 const Container = styled.div`

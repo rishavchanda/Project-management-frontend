@@ -1,24 +1,25 @@
 import {
   CloseRounded,
   EmailRounded,
-  Password,
   PasswordRounded,
   Person,
+  Visibility,
+  VisibilityOff,
   TroubleshootRounded,
 } from "@mui/icons-material";
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState,useEffect } from "react";
 import styled from "styled-components";
 import Google from "../Images/google.svg";
-import { Modal } from "@mui/material";
+import { IconButton, Modal } from "@mui/material";
 import { loginFailure, loginStart, loginSuccess } from "../redux/userSlice";
-import { openSnackbar, closeSnackbar } from "../redux/snackbarSlice";
+import { openSnackbar} from "../redux/snackbarSlice";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import CircularProgress from "@mui/material/CircularProgress";
 import validator from "validator";
 import { auth, provider } from "../firebase";
 import { signInWithPopup } from "firebase/auth";
+
 
 const Container = styled.div`
   width: 100%;
@@ -143,8 +144,12 @@ const SignUp = ({ setSignUpOpen, setSignInOpen }) => {
   const [disabled, setDisabled] = useState(true);
   const [emailError, setEmailError] = useState("");
   const [credentialError, setcredentialError] = useState("");
-  const [passwordError, setPasswordError] = useState("");
   const [passwordCorrect, setPasswordCorrect] = useState(false);
+  const [nameCorrect, setNameCorrect] = useState(false);
+  const [values, setValues] = useState({
+    password: "",
+    showPassword: false,
+  });
   const dispatch = useDispatch();
 
   const handleSignUp = async (e) => {
@@ -161,16 +166,16 @@ const SignUp = ({ setSignUpOpen, setSignInOpen }) => {
           password,
         });
         if (res.status === 200) {
-          dispatch(loginSuccess(res.data));
           dispatch(
             openSnackbar({ message: res.data.message, severity: "success" })
           );
           setLoading(false);
           setDisabled(false);
           setSignUpOpen(false);
+          setSignInOpen(true);
         } else {
           dispatch(loginFailure());
-          setcredentialError(`Invalid Credentials : ${res.data.message}`);
+          setcredentialError(`${res.data.message}`);
           setLoading(false);
           setDisabled(false);
         }
@@ -195,29 +200,35 @@ const SignUp = ({ setSignUpOpen, setSignInOpen }) => {
   };
 
   useEffect(() => {
-    if (name !== "" && validator.isEmail(email) && passwordCorrect) {
+    if (email !== "" )
+      validateEmail();
+    if (password !== "") 
+      validatePassword();
+    if (name !== "")
+      validateName();
+    if (name !== "" && validator.isEmail(email) && passwordCorrect && nameCorrect) {
       setDisabled(false);
     } else {
       setDisabled(true);
     }
-  }, [name, email, passwordCorrect]);
+  }, [name, email, passwordCorrect, password, nameCorrect]);
 
-  const validateEmail = (e) => {
-    setEmail(e.target.value);
-    if (!validator.isEmail(email)) {
-      setEmailError("Enter a valid Email Id!");
-    } else {
+  //validate email
+  const validateEmail = () => {
+    if (validator.isEmail(email)) {
       setEmailError("");
+    } else {
+      setEmailError("Enter a valid Email Id!");
     }
   };
 
-  const validatePassword = (e) => {
-    setPassword(e.target.value);
+  //validate password
+  const validatePassword = () => {
     if (password.length < 8) {
-      setPasswordError("Password must be atleast 8 characters long!");
+      setcredentialError("Password must be atleast 8 characters long!");
       setPasswordCorrect(false);
     } else if (password.length > 16) {
-      setPasswordError("Password must be less than 16 characters long!");
+      setcredentialError("Password must be less than 16 characters long!");
       setPasswordCorrect(false);
     } else if (
       !password.match(/[a-z]/g) ||
@@ -226,12 +237,23 @@ const SignUp = ({ setSignUpOpen, setSignInOpen }) => {
       !password.match(/[^a-zA-Z\d]/g)
     ) {
       setPasswordCorrect(false);
-      setPasswordError(
+      setcredentialError(
         "Password must contain atleast one lowercase, uppercase, number and special character!"
       );
     } else {
-      setPasswordError("");
+      setcredentialError("");
       setPasswordCorrect(true);
+    }
+  };
+
+  //validate name
+  const validateName = () => {
+    if (name.length < 4) {
+      setNameCorrect(false);
+      setcredentialError("Name must be atleast 4 characters long!");
+    } else {
+      setNameCorrect(true);
+      setcredentialError("");
     }
   };
 
@@ -254,12 +276,12 @@ const SignUp = ({ setSignUpOpen, setSignInOpen }) => {
               setSignUpOpen(false);
               dispatch(
                 openSnackbar({
-                  message: "Logged In Successfully",
+                  message: "Account Created Successfully",
                   severity: "success",
                 })
               );
             } else {
-              dispatch(loginFailure(res.data));
+              dispatch(loginFailure());
               dispatch(
                 openSnackbar({
                   message: res.data.message,
@@ -321,19 +343,21 @@ const SignUp = ({ setSignUpOpen, setSignInOpen }) => {
             <TextInput
               placeholder="Email Id"
               type="email"
-              onChange={(e) => validateEmail(e)}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </OutlinedBox>
           <Error error={emailError}>{emailError}</Error>
           <OutlinedBox>
             <PasswordRounded style={{ paddingRight: "12px" }} />
             <TextInput
-              type="password"
+              type={values.showPassword ? "text" : "password"}
               placeholder="password"
-              onChange={(e) => validatePassword(e)}
+              onChange={(e) => setPassword(e.target.value)}
             />
+            <IconButton color="inherit" onClick={() => setValues({ ...values, showPassword: !values.showPassword })}>
+              {values.showPassword ? <Visibility /> : <VisibilityOff />}
+            </IconButton>
           </OutlinedBox>
-          <Error error={passwordError}>{passwordError}</Error>
           <Error error={credentialError}>{credentialError}</Error>
           <OutlinedBox
             button={true}

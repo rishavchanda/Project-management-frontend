@@ -37,7 +37,6 @@ function App() {
   const [menuOpen, setMenuOpen] = useState(true);
   const { open, message, severity } = useSelector((state) => state.snackbar);
 
-
   return (
     <DndProvider backend={HTML5Backend}>
       <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>

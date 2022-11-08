@@ -1,20 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import SearchIcon from "@mui/icons-material/Search";
-import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
-import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
-import VideoCallOutlinedIcon from "@mui/icons-material/VideoCallOutlined";
 import SignUp from "./SignUp";
 import SignIn from "./SignIn";
 import MenuIcon from "@mui/icons-material/Menu";
 import { IconButton } from "@mui/material";
-import { MenuOpen, NotificationsRounded } from "@mui/icons-material";
+import {NotificationsRounded } from "@mui/icons-material";
 import Badge from "@mui/material/Badge";
-import { openSnackbar, closeSnackbar } from "../redux/snackbarSlice";
 import { useDispatch } from "react-redux";
 import Avatar from "@mui/material/Avatar";
+import AccountDialog from "./AccountDialog";
 
 const Container = styled.div`
   position: sticky;
@@ -92,19 +89,43 @@ const User = styled.div`
   color: ${({ theme }) => theme.text};
 `;
 
-const avatar = styled.img`
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  background-color: #999;
-`;
 
 const Navbar = ({ menuOpen, setMenuOpen }) => {
-  // const { currentUser } = useSelector((state) => state.user);
   const [SignUpOpen, setSignUpOpen] = useState(false);
   const [SignInOpen, setSignInOpen] = useState(false);
+  const [verifyEmail, setVerifyEmail] = useState(false);
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user);
+  useEffect(() => {
+    if (!currentUser && !SignUpOpen) {
+      setSignInOpen(true);
+      setSignUpOpen(false);
+    }else if(!currentUser && SignUpOpen){
+      setSignInOpen(false);
+      setSignUpOpen(true);
+    }
+    console.log(currentUser);
+    if (currentUser && !currentUser.verified) {
+      setVerifyEmail(true)
+    }else{
+      setVerifyEmail(false)
+    }
+  }, [currentUser, SignInOpen, SignUpOpen, setVerifyEmail]);
+
+
+
+  //Open the account dialog
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const id = open ? 'simple-popover' : undefined;
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
     <>
       <Container>
@@ -117,30 +138,6 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
             <SearchIcon style={{ marginRight: "20px", marginLeft: "20px" }} />
           </Search>
           <User>
-            {/*
-            <IcoButton>
-              <Badge badgeContent={4} color="primary">
-                <NotificationsRounded />
-              </Badge>
-            </IcoButton>
-            <IcoButton>
-              <Badge
-                badgeContent="    "
-                color="success"
-                variant="dot"
-                overlap="circular"
-                anchorOrigin={{
-                  vertical: "bottom",
-                  horizontal: "right",
-                }}
-              >
-                <Avatar
-                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSHd_XKsw6LmueZnx8WO9oB_jMDieCpOKWe3Q&usqp=CAU"
-                  name="R"
-                />
-              </Badge>
-            </IcoButton>
-            */}
             {currentUser ? (
               <>
                 <IcoButton>
@@ -148,7 +145,7 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
                     <NotificationsRounded />
                   </Badge>
                 </IcoButton>
-                <IcoButton>
+                <IcoButton aria-describedby={id} onClick={handleClick}>
                   <Badge
                     badgeContent="    "
                     color="success"
@@ -181,7 +178,9 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
       {SignInOpen && (
         <SignIn setSignInOpen={setSignInOpen} setSignUpOpen={setSignUpOpen} />
       )}
-    </>
+      {currentUser && <AccountDialog open={open} anchorEl={anchorEl} id={id} handleClose={handleClose} currentUser={currentUser}/>}
+      </>
+      
   );
 };
 
