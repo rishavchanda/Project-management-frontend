@@ -12,12 +12,14 @@ import {
   Edit,
   PersonAdd,
 } from "@mui/icons-material";
-import { data, tools, members,ideas,tagColors } from "../data/data";
+import { data, tools, members, ideas, tagColors } from "../data/data";
 import WorkCards from "../components/WorkCards";
 import MemberCard from "../components/MemberCard";
 import { IconButton } from "@mui/material";
 import ToolsCard from "../components/ToolsCard";
 import IdeaCard from "../components/IdeaCard";
+import axios from "axios";
+import Avatar from "@mui/material/Avatar";
 
 const Container = styled.div`
   padding: 14px 14px;
@@ -62,7 +64,6 @@ const Desc = styled.div`
   -webkit-box-orient: vertical;
 `;
 
-
 const Tags = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -74,12 +75,11 @@ const Tags = styled.div`
 const Tag = styled.div`
   padding: 4px 10px;
   border-radius: 8px;
-  color: ${({ tagColor,theme }) => tagColor + theme.lightAdd};
+  color: ${({ tagColor, theme }) => tagColor + theme.lightAdd};
   background-color: ${({ tagColor, theme }) => tagColor + "10"};
   font-size: 12px;
   font-weight: 500;
 `;
-
 
 const Members = styled.div`
   display: flex;
@@ -94,14 +94,6 @@ const AvatarGroup = styled.div`
   margin-right: 12px;
 `;
 
-const Avatar = styled.img`
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  margin-right: -12px;
-  border: 3px solid ${({ theme }) => theme.bgLighter};
-`;
-
 const InviteButton = styled.button`
   padding: 6px 14px;
   background-color: transparent;
@@ -113,7 +105,7 @@ const InviteButton = styled.button`
   display: flex;
   align-items: center;
   gap: 5px;
-  font-size: 13px;
+  font-size: 11px;
   border-radius: 10px;
   transition: all 0.3s ease;
   margin: 0px 16px;
@@ -300,136 +292,155 @@ const Ideas = styled.div`
 
 const ProjectDetails = () => {
   const { id } = useParams();
-  const [item, setItems] = useState(data[0]);
+  const [item, setItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const getproject = async () => {
+    await axios
+      .get(`/project/${id}`)
+      .then((res) => {
+        setItems(res.data);
+      })
+      .then(() => {
+        setLoading(false);
+        console.log(item);
+      });
+  };
   useEffect(() => {
     window.scrollTo(0, 0);
-    setItems(data[id - 1]);
+    getproject();
   }, [id]);
 
+  console.log(item);
   const [alignment, setAlignment] = React.useState(true);
 
   return (
     <Container>
-      <Header>
-        <Title>{item.title}</Title>
-        <Desc>{item.desc}</Desc>
-        <Tags>
-            {item.tags.map((tag) => (
-              <Tag
-                tagColor={
-                  tagColors[Math.floor(Math.random() * tagColors.length)]
-                }
-              >
-                {tag}
-              </Tag>
+      {loading ? (
+        <>Loading</>
+      ) : (
+        <>
+          <Header>
+            <Title>{item.title}</Title>
+            <Desc>{item.desc}</Desc>
+            <Tags>
+              {item.tags.map((tag) => (
+                <Tag
+                  tagColor={
+                    tagColors[Math.floor(Math.random() * tagColors.length)]
+                  }
+                >
+                  {tag}
+                </Tag>
+              ))}
+            </Tags>
+            <Members>
+              <AvatarGroup>
+                {item.members.map((member) => (
+              <Avatar sx={{marginRight: '-12px', width: '38px', height: '38px'}} src={member.img} />
             ))}
-          </Tags>
-        <Members>
-          <AvatarGroup>
-            {item.members.map((member) => (
-              <Avatar src={member.image} />
-            ))}
-          </AvatarGroup>
-          <InviteButton>
-            <PersonAdd sx={{ fontSize: "16px" }} />
-            Invite
-          </InviteButton>
-        </Members>
-        <Hr />
-      </Header>
-      <Body>
-        <Work>
-          <Allignment>
-            <ToggleButton
-              alignment={alignment}
-              button={"row"}
-              onClick={() => setAlignment(true)}
-            >
-              <AlignVerticalTop sx={{ fontSize: "18px" }} />
-            </ToggleButton>
-            <ToggleButton
-              alignment={alignment}
-              button={"col"}
-              onClick={() => setAlignment(false)}
-            >
-              <AlignHorizontalLeft sx={{ fontSize: "18px" }} />
-            </ToggleButton>
-          </Allignment>
-          <Column alignment={alignment}>
-            <ItemWrapper>
-              <Top>
-                <Text>
-                  <DonutLarge sx={{ color: "#1976D2", fontSize: "20px" }} />
-                  In Progress
-                  <Span>(5)</Span>
-                </Text>
-                <AddNewButton>
-                  <Add />
-                </AddNewButton>
-              </Top>
-              <Wrapper alignment={alignment}>
-                <WorkCards status="In Progress"/>
-                <WorkCards status="In Progress"/>
-                <WorkCards status="In Progress"/>
-              </Wrapper>
-            </ItemWrapper>
-            <ItemWrapper>
-              <Top>
-                <Text>
-                  <CheckCircleOutlineOutlined
-                    sx={{ color: "#67BC6D", fontSize: "20px" }}
-                  />
-                  Completed
-                  <Span>(5)</Span>
-                </Text>
-              </Top>
-              <Wrapper alignment={alignment}>
-                <WorkCards status="Completed"/>
-              </Wrapper>
-            </ItemWrapper>
-          </Column>
-        </Work>
-        <HrHor />
-        <Extra>
-          <SubCards>
-            <SubCardTop>
-              <SubCardsTitle>Members</SubCardsTitle>
-              <IcoBtn>
-                <Edit sx={{ fontSize: "16px" }} />
-              </IcoBtn>
-            </SubCardTop>
-            {members.map((member) => (
+              </AvatarGroup>
+              <InviteButton>
+                <PersonAdd sx={{ fontSize: "12px" }} />
+                Invite
+              </InviteButton>
+            </Members>
+            <Hr />
+          </Header>
+          <Body>
+            <Work>
+              <Allignment>
+                <ToggleButton
+                  alignment={alignment}
+                  button={"row"}
+                  onClick={() => setAlignment(true)}
+                >
+                  <AlignVerticalTop sx={{ fontSize: "18px" }} />
+                </ToggleButton>
+                <ToggleButton
+                  alignment={alignment}
+                  button={"col"}
+                  onClick={() => setAlignment(false)}
+                >
+                  <AlignHorizontalLeft sx={{ fontSize: "18px" }} />
+                </ToggleButton>
+              </Allignment>
+              <Column alignment={alignment}>
+                <ItemWrapper>
+                  <Top>
+                    <Text>
+                      <DonutLarge sx={{ color: "#1976D2", fontSize: "20px" }} />
+                      In Progress
+                      <Span>(5)</Span>
+                    </Text>
+                    <AddNewButton>
+                      <Add />
+                    </AddNewButton>
+                  </Top>
+                  <Wrapper alignment={alignment}>
+                    <WorkCards status="In Progress" />
+                    <WorkCards status="In Progress" />
+                    <WorkCards status="In Progress" />
+                  </Wrapper>
+                </ItemWrapper>
+                <ItemWrapper>
+                  <Top>
+                    <Text>
+                      <CheckCircleOutlineOutlined
+                        sx={{ color: "#67BC6D", fontSize: "20px" }}
+                      />
+                      Completed
+                      <Span>(5)</Span>
+                    </Text>
+                  </Top>
+                  <Wrapper alignment={alignment}>
+                    <WorkCards status="Completed" />
+                  </Wrapper>
+                </ItemWrapper>
+              </Column>
+            </Work>
+            <HrHor />
+            <Extra>
+              <SubCards>
+                <SubCardTop>
+                  <SubCardsTitle>Members</SubCardsTitle>
+                  <IcoBtn>
+                    <Edit sx={{ fontSize: "16px" }} />
+                  </IcoBtn>
+                </SubCardTop>
+                {item.members.map((member) => (
               <MemberCard member={member} />
             ))}
-          </SubCards>
-          <SubCards>
-            <SubCardTop>
-              <SubCardsTitle>Tools</SubCardsTitle>
-              <IcoBtn>
-                <Add sx={{ fontSize: "20px" }} />
-              </IcoBtn>
-            </SubCardTop>
-            <Tools>
-              {tools.map((tool) => (
+              </SubCards>
+              <SubCards>
+                <SubCardTop>
+                  <SubCardsTitle>Tools</SubCardsTitle>
+                  <IcoBtn>
+                    <Add sx={{ fontSize: "20px" }} />
+                  </IcoBtn>
+                </SubCardTop>
+                <Tools>
+                  {item.tools.map((tool) => (
                 <ToolsCard tool={tool} />
               ))}
-            </Tools>
-          </SubCards>
-          <SubCards>
-            <SubCardTop>
-              <SubCardsTitle>Idea List</SubCardsTitle>
-              <IcoBtn>
-                <Add sx={{ fontSize: "20px" }} />
-              </IcoBtn>
-            </SubCardTop>
-            <Ideas>
-              {ideas.map((i,id) => (
+                </Tools>
+              </SubCards>
+              <SubCards>
+                <SubCardTop>
+                  <SubCardsTitle>Idea List</SubCardsTitle>
+                  <IcoBtn>
+                    <Add sx={{ fontSize: "20px" }} />
+                  </IcoBtn>
+                </SubCardTop>
+                <Ideas>
+                  {/*ideas.map((i,id) => (
                 <IdeaCard idea={i} no={id} key={id}/>
-              ))}
-            </Ideas>
-          </SubCards>
-        </Extra>
-      </Body>
+              ))*/}
+                </Ideas>
+              </SubCards>
+            </Extra>
+          </Body>
+        </>
+      )}
     </Container>
   );
 };

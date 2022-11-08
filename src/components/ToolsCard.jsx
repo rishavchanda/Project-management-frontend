@@ -27,8 +27,11 @@ const Text = styled.div`
 `;
 
 const ToolsCard = ({tool}) => {
+    const openWebsite = () => {
+        window.open(tool.link, "_blank");
+    }
   return (
-   <Container>
+   <Container onClick={openWebsite}>
         <Img src={tool.icon}/>
         <Text>{tool.name}</Text>
    </Container>

@@ -160,7 +160,7 @@ const SignUp = ({ setSignUpOpen, setSignInOpen }) => {
       setDisabled(true);
       setLoading(true);
       try {
-        const res = await axios.post(`http://localhost:8800/api/auth/signup`, {
+        const res = await axios.post(`/auth/signup`, {
           name,
           email,
           password,
@@ -181,6 +181,8 @@ const SignUp = ({ setSignUpOpen, setSignInOpen }) => {
         }
       } catch (err) {
         dispatch(loginFailure());
+        setLoading(false);
+        setDisabled(false);
         dispatch(
           openSnackbar({
             message: err.message,

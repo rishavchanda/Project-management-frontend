@@ -1,11 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import styled from "styled-components";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
-import FlagOutlinedIcon from "@mui/icons-material/FlagOutlined";
-import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import SettingsBrightnessOutlinedIcon from "@mui/icons-material/SettingsBrightnessOutlined";
-import Diversity2Icon from "@mui/icons-material/Diversity2";
 import { Link } from "react-router-dom";
 import {
   Add,
@@ -20,6 +16,7 @@ import { tagColors } from "../data/data";
 import LogoIcon from "../Images/Logo.svg";
 import { useDispatch } from "react-redux";
 import { logout } from "../redux/userSlice";
+import useState from "react";
 
 const Container = styled.div`
   flex: 1.3;
@@ -94,6 +91,8 @@ const Menu = ({ darkMode, setDarkMode, setMenuOpen }) => {
   const logoutUser = () => {
     dispatch(logout())
   }
+
+  const [team,setTeams] = useState([])
 
 
   return (

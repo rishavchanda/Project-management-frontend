@@ -1,9 +1,12 @@
+import axios from "axios";
 import React from "react";
 import { useState,useEffect } from "react";
 import styled from "styled-components";
 import Item from "../components/Card";
 import DropWrapper from "../components/DropWrapper";
 import { statuses, data, tagColors } from "../data/data";
+import {useDispatch} from "react-redux";
+import { openSnackbar } from "../redux/snackbarSlice";
 
 const Container = styled.div`
   width: 100%;
@@ -37,29 +40,18 @@ const Wrapper = styled.div`
 `;
 
 const Projects = () => {
-  const [items, setItems] = useState(data);
-
-  const onDrop = (item, monitor, status) => {
-    const mapping = statuses.find((si) => si.status === status);
-
-    setItems((prevState) => {
-      const newItems = prevState
-        .filter((i) => i.id !== item.id)
-        .concat({ ...item, status });
-      return [...newItems];
+  const dispatch = useDispatch();
+  const [data, setData] = useState([]);
+  const getprojects = async() => {
+    await axios.get("/users/projects").then((res) => {
+      setData(res.data);
+    }).then((err) => {      
+      dispatch(openSnackbar({message: err.message, type: "error"}));
     });
-  };
-
-  const moveItem = (dragIndex, hoverIndex) => {
-    const item = items[dragIndex];
-    setItems((prevState) => {
-      const newItems = prevState.filter((i, idx) => idx !== dragIndex);
-      newItems.splice(hoverIndex, 0, item);
-      return [...newItems];
-    });
-  };
+  }
 
   useEffect(() => {
+    getprojects()
     window.scrollTo(0, 0);
   }, []);
 
@@ -78,7 +70,7 @@ const Projects = () => {
                   .filter((item) => item.status == s.status)
                   .map((item, idx) => (
                     <Item
-                      key={idx}
+                      key={item._id}
                       item={item}
                       index={idx}
                       status={s}

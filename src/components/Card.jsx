@@ -7,6 +7,9 @@ import { useDrag, useDrop } from "react-dnd";
 import ITEM_TYPE from "../data/types";
 import { tagColors } from "../data/data";
 import { Link } from "react-router-dom";
+import {format} from 'timeago.js';
+import axios from "axios";
+import Avatar from "@mui/material/Avatar";
 
 const Container = styled.div`
   padding: 14px 14px;
@@ -122,7 +125,7 @@ const AvatarGroup = styled.div`
   margin-right: 12px;
 `;
 
-const Avatar = styled.img`
+const avatar = styled(Avatar)`
   width: 34px;
   height: 34px;
   border-radius: 50%;
@@ -173,10 +176,10 @@ const Card = ({ tagColor, item, index, status }) => {
   //drag(drop(ref));
 
   return (
-    <Link to={`/projects/${item.id}`} style={{ textDecoration: "none" }}>
+    <Link to={`/projects/${item._id}`} style={{ textDecoration: "none" }}>
       <Fragment>
         <Container ref={ref} className={"item"}>
-          {item.image && <Image src={item.image} />}
+          {item.img && <Image src={item.img} />}
           <Top>
             <Title>{item.title}</Title>
             <MoreHoriz style={{ flex: "1" }} />
@@ -195,16 +198,11 @@ const Card = ({ tagColor, item, index, status }) => {
           </Tags>
           <Bottom>
             <Time>
-              <TimelapseRounded /> Updated {item.time}
+              <TimelapseRounded /> Updated {format(item.updatedAt)}
             </Time>
             <AvatarGroup>
               {item.members.map((member) => (
-                <Avatar
-                  tagColor={
-                    tagColors[Math.floor(Math.random() * tagColors.length)]
-                  }
-                  src={member.image}
-                />
+                <Avatar sx={{marginRight: '-12px', width: '36px', height: '36px'}}  src={member.img} />
               ))}
             </AvatarGroup>
           </Bottom>

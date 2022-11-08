@@ -9,7 +9,6 @@ import {
 } from "@mui/icons-material";
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import Google from "../Images/google.svg";
 import { IconButton, Modal } from "@mui/material";
 import CircularProgress from "@mui/material/CircularProgress";
 import { loginFailure, loginStart, loginSuccess } from "../redux/userSlice";
@@ -163,7 +162,7 @@ const SignIn = ({ setSignInOpen, setSignUpOpen }) => {
       setDisabled(true);
       setLoading(true);
       try {
-        const res = await axios.post(`http://localhost:8800/api/auth/signin`, {
+        const res = await axios.post(`/auth/signin`, {
           email,
           password,
         });
@@ -197,6 +196,8 @@ const SignIn = ({ setSignInOpen, setSignUpOpen }) => {
         }
       } catch (err) {
         dispatch(loginFailure());
+        setLoading(false);
+        setDisabled(false);
         dispatch(
           openSnackbar({
             message: err.message,
@@ -232,7 +233,7 @@ const SignIn = ({ setSignInOpen, setSignUpOpen }) => {
     signInWithPopup(auth, provider)
       .then((result) => {
         axios
-          .post("http://localhost:8800/api/auth/google", {
+          .post("/auth/google", {
             name: result.user.displayName,
             email: result.user.email,
             img: result.user.photoURL,

@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { tagColors } from "../data/data";
+import { Avatar } from "@mui/material";
 
 const Container = styled.div`
   padding: 6px 4px;
@@ -17,12 +18,6 @@ const Wrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
-`;
-
-const Avatar = styled.img`
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
 `;
 
 const Details = styled.div`
@@ -63,7 +58,7 @@ const MemberCard = ({ member }) => {
   return (
     <Container>
       <Wrapper>
-        <Avatar src={member.image} />
+        <Avatar sx={{width: '34px', height: '34px'}} src={member.img} />
         <Details>
           <Name>{member.name}</Name>
           <EmailId>{member.email}</EmailId>
