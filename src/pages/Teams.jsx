@@ -5,10 +5,6 @@ import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import {
   Add,
-  AlignHorizontalLeft,
-  AlignVerticalTop,
-  CheckCircleOutlineOutlined,
-  DonutLarge,
   Edit,
   PersonAdd,
 } from "@mui/icons-material";
@@ -111,7 +107,7 @@ const Body = styled.div`
 `;
 
 const Work = styled.div`
-  flex: 1.6;
+  flex: 4;
 `;
 
 const ItemWrapper = styled.div`
@@ -176,7 +172,7 @@ const IcoBtn = styled(IconButton)`
 `;
 
 const Extra = styled.div`
-  flex: 0.8;
+  flex: 2;
 `;
 
 const SubCards = styled.div`
@@ -298,7 +294,7 @@ const Teams = () => {
                   <Top>
                     <Text>
                       📝 Completed
-                      <Span>({projects.filter((item) => item.status == "Completed").length})</Span>
+                      <Span>({projects.filter((item) => item.status == "In Progress").length})</Span>
                     </Text>
                   </Top>
                   <Wrapper>

@@ -15,7 +15,7 @@ const Container = styled.div`
   padding: 14px 14px;
   text-align: left;
   margin: 12px 0px 8px 0px;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 500;
   border-radius: 10px;
   background-color: ${({ theme }) => theme.card};
@@ -29,7 +29,7 @@ const Container = styled.div`
 `;
 
 const Image = styled.img`
-  height: 150px;
+  height: 120px;
   width: 100%;
   object-fit: cover;
   border-radius: 10px;
@@ -44,7 +44,7 @@ const Top = styled.div`
 `;
 
 const Title = styled.div`
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 500;
   color: ${({ theme }) => theme.textSoft};
   margin-top: 6px;
@@ -59,7 +59,7 @@ const Title = styled.div`
 `;
 
 const Desc = styled.div`
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 400;
   color: ${({ theme }) => theme.soft2};
   margin-top: 8px;
@@ -72,26 +72,13 @@ const Desc = styled.div`
   -webkit-box-orient: vertical;
 `;
 
-const Progress = styled.div`
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 8px;
-  margin-bottom: 8px;
-  background-color: ${({ theme }) => theme.soft2};
-`;
-
-const progresBar = styled(LinearProgress)`
-  background-color: ${({ theme }) => theme.soft2};
-`;
 
 const Tags = styled.div`
   display: flex;
   flex-wrap: wrap;
   flex-direction: row;
   gap: 6px;
-  margin-top: 14px;
+  margin-top: 8px;
 `;
 
 const Tag = styled.div`
@@ -99,7 +86,7 @@ const Tag = styled.div`
   border-radius: 8px;
   color: ${({ tagColor,theme }) => tagColor + theme.lightAdd};
   background-color: ${({ tagColor, theme }) => tagColor + "10"};
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 500;
 `;
 
@@ -107,14 +94,14 @@ const Bottom = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 16px 0px;
+  margin: 10px 0px;
 `;
 
 const Time = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 500;
   color: ${({ theme }) => theme.soft2 + "99"};
 `;
@@ -125,13 +112,6 @@ const AvatarGroup = styled.div`
   margin-right: 12px;
 `;
 
-const avatar = styled(Avatar)`
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  margin-right: -12px;
-  border: 3px solid ${({ theme }) => theme.bgLighter};
-`;
 
 const Card = ({ tagColor, item, index, status }) => {
   const ref = useRef(null);
@@ -182,7 +162,6 @@ const Card = ({ tagColor, item, index, status }) => {
           {item.img && <Image src={item.img} />}
           <Top>
             <Title>{item.title}</Title>
-            <MoreHoriz style={{ flex: "1" }} />
           </Top>
           <Desc>{item.desc}</Desc>
           <Tags>
@@ -198,11 +177,11 @@ const Card = ({ tagColor, item, index, status }) => {
           </Tags>
           <Bottom>
             <Time>
-              <TimelapseRounded /> Updated {format(item.updatedAt)}
+              <TimelapseRounded sx={{fontSize: '18px'}}/> Updated {format(item.updatedAt)}
             </Time>
             <AvatarGroup>
               {item.members.map((member) => (
-                <Avatar sx={{marginRight: '-12px', width: '36px', height: '36px'}}  src={member.img} >{member.name.charAt(0)}</Avatar>
+                <Avatar sx={{marginRight: '-12px', width: '34px', height: '34px'}}  src={member.img} >{member.name.charAt(0)}</Avatar>
               ))}
             </AvatarGroup>
           </Bottom>

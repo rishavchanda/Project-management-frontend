@@ -1,11 +1,11 @@
 import axios from "axios";
 import React from "react";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import Item from "../components/Card";
 import DropWrapper from "../components/DropWrapper";
 import { statuses, data, tagColors } from "../data/data";
-import {useDispatch} from "react-redux";
+import { useDispatch } from "react-redux";
 import { openSnackbar } from "../redux/snackbarSlice";
 import { useSelector } from "react-redux";
 
@@ -43,17 +43,20 @@ const Wrapper = styled.div`
 const Projects = () => {
   const dispatch = useDispatch();
   const [data, setData] = useState([]);
-  const {currentUser} = useSelector(state => state.user);
-  const getprojects = async() => {
-    await axios.get("/users/projects").then((res) => {
-      setData(res.data);
-    }).then((err) => {      
-      dispatch(openSnackbar({message: err.message, type: "error"}));
-    });
-  }
+  const { currentUser } = useSelector((state) => state.user);
+  const getprojects = async () => {
+    await axios
+      .get("/users/projects")
+      .then((res) => {
+        setData(res.data);
+      })
+      .then((err) => {
+        dispatch(openSnackbar({ message: err.message, type: "error" }));
+      });
+  };
 
   useEffect(() => {
-    getprojects()
+    getprojects();
     window.scrollTo(0, 0);
   }, [currentUser]);
 
@@ -63,7 +66,7 @@ const Projects = () => {
         {statuses.map((s) => {
           return (
             <ItemWrapper key={statuses}>
-              {s.icon} {s.status} 
+              {s.icon} {s.status}
               <Span>
                 ({data.filter((item) => item.status == s.status).length})
               </Span>
