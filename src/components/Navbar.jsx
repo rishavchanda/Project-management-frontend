@@ -158,9 +158,9 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
                   >
                     <Avatar
                       src={currentUser.img}
-                      name={currentUser.name}
+                      alt={currentUser.name}
                       sx={{ width: 34, height: 34 }}
-                    />
+                    >{currentUser.name.charAt(0)}</Avatar>
                   </Badge>
                 </IcoButton>
               </>

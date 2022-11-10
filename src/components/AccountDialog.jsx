@@ -92,7 +92,7 @@ const AccountDialog = ({ open, id, anchorEl, handleClose, currentUser }) => {
           <Avatar
             sx={{ width: "50px", height: "50px" }}
             src={currentUser.img}
-          />
+          >{currentUser.name.charAt(0)}</Avatar>
           <Details>
             <Name>{currentUser.name}</Name>
             <Email>{currentUser.email}</Email>

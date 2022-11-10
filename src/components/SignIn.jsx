@@ -146,8 +146,7 @@ const SignIn = ({ setSignInOpen, setSignUpOpen }) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (email !== "")
-      validateEmail();
+    if (email !== "") validateEmail();
     if (validator.isEmail(email) && password.length > 5) {
       setDisabled(false);
     } else {
@@ -314,7 +313,12 @@ const SignIn = ({ setSignInOpen, setSignUpOpen }) => {
               type={values.showPassword ? "text" : "password"}
               onChange={(e) => setPassword(e.target.value)}
             />
-            <IconButton color="inherit" onClick={() => setValues({ ...values, showPassword: !values.showPassword })}>
+            <IconButton
+              color="inherit"
+              onClick={() =>
+                setValues({ ...values, showPassword: !values.showPassword })
+              }
+            >
               {values.showPassword ? <Visibility /> : <VisibilityOff />}
             </IconButton>
           </OutlinedBox>

@@ -7,6 +7,7 @@ import DropWrapper from "../components/DropWrapper";
 import { statuses, data, tagColors } from "../data/data";
 import {useDispatch} from "react-redux";
 import { openSnackbar } from "../redux/snackbarSlice";
+import { useSelector } from "react-redux";
 
 const Container = styled.div`
   width: 100%;
@@ -42,6 +43,7 @@ const Wrapper = styled.div`
 const Projects = () => {
   const dispatch = useDispatch();
   const [data, setData] = useState([]);
+  const {currentUser} = useSelector(state => state.user);
   const getprojects = async() => {
     await axios.get("/users/projects").then((res) => {
       setData(res.data);
@@ -53,7 +55,7 @@ const Projects = () => {
   useEffect(() => {
     getprojects()
     window.scrollTo(0, 0);
-  }, []);
+  }, [currentUser]);
 
   return (
     <Container>

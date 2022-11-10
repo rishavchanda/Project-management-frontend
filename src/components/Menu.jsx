@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import styled from "styled-components";
 import SettingsBrightnessOutlinedIcon from "@mui/icons-material/SettingsBrightnessOutlined";
@@ -16,7 +16,9 @@ import { tagColors } from "../data/data";
 import LogoIcon from "../Images/Logo.svg";
 import { useDispatch } from "react-redux";
 import { logout } from "../redux/userSlice";
-import useState from "react";
+import { openSnackbar } from "../redux/snackbarSlice";
+import axios from "axios";
+import { useSelector } from "react-redux";
 
 const Container = styled.div`
   flex: 1.3;
@@ -87,13 +89,29 @@ const TeamIcon = styled(WorkspacesRounded)`
 `;
 
 const Menu = ({ darkMode, setDarkMode, setMenuOpen }) => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   const logoutUser = () => {
-    dispatch(logout())
-  }
+    dispatch(logout());
+  };
 
-  const [team,setTeams] = useState([])
+  const [team, setTeams] = useState([]);
+  const {currentUser} = useSelector(state => state.user);
 
+  const getteams = async () => {
+    await axios
+      .get("/users/find")
+      .then((res) => {
+        setTeams(res.data.teams);
+      })
+      .catch((err) => {
+        dispatch(openSnackbar({ message: err.message, type: "error" }));
+      });
+    console.log(team);
+  };
+
+  useEffect(() => {
+    getteams();
+  }, [currentUser]);
 
   return (
     <Container setMenuOpen={setMenuOpen}>
@@ -132,24 +150,17 @@ const Menu = ({ darkMode, setDarkMode, setMenuOpen }) => {
         <Title>
           <Groups2Rounded /> Teams
         </Title>
-        <Link
-          to="/teams/team-alpha"
-          style={{ textDecoration: "none", color: "inherit" }}
-        >
-          <Item>
-            <TeamIcon sx={{ fontSize: "18px" }} tagColor={tagColors[3]} />
-            Team Alpha 
-          </Item>
-        </Link>
-        <Link
-          to="/teams/zolo"
-          style={{ textDecoration: "none", color: "inherit" }}
-        >
-          <Item>
-            <TeamIcon sx={{ fontSize: "18px" }} tagColor={tagColors[1]} />
-            Zolo
-          </Item>
-        </Link>
+        {team.map((team,i) => (
+          <Link
+            to = {`/teams/${team.id}`}
+            style={{ textDecoration: "none", color: "inherit" }}
+          >
+            <Item>
+              <TeamIcon sx={{ fontSize: "18px" }} tagColor={tagColors[i]} />
+              {team.name}
+            </Item>
+          </Link>
+        ))}
         <Item>
           <Add sx={{ fontSize: "20px" }} />
           New Team
@@ -159,8 +170,8 @@ const Menu = ({ darkMode, setDarkMode, setMenuOpen }) => {
           <SettingsBrightnessOutlinedIcon />
           {darkMode ? "Light" : "Dark"} Mode
         </Item>
-        <Item onClick={()=>  logoutUser()}>
-          <Logout/>
+        <Item onClick={() => logoutUser()}>
+          <Logout />
           Logout
         </Item>
         <Space />

@@ -12,12 +12,15 @@ import {
   Edit,
   PersonAdd,
 } from "@mui/icons-material";
-import { data, tools, members,ideas,tagColors } from "../data/data";
+import { data, tools, members, ideas, tagColors } from "../data/data";
 import Card from "../components/Card";
 import MemberCard from "../components/MemberCard";
 import { IconButton } from "@mui/material";
 import ToolsCard from "../components/ToolsCard";
 import IdeaCard from "../components/IdeaCard";
+import axios from "axios";
+import { useSelector } from "react-redux";
+import Avatar from "@mui/material/Avatar";
 
 const Container = styled.div`
   padding: 14px 14px;
@@ -74,14 +77,6 @@ const AvatarGroup = styled.div`
   margin-right: 12px;
 `;
 
-const Avatar = styled.img`
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  margin-right: -12px;
-  border: 3px solid ${({ theme }) => theme.bgLighter};
-`;
-
 const InviteButton = styled.button`
   padding: 6px 14px;
   background-color: transparent;
@@ -107,8 +102,6 @@ const Hr = styled.hr`
   margin: 18px 0px;
   border: 0.5px solid ${({ theme }) => theme.soft + "99"};
 `;
-
-
 
 const Body = styled.div`
   display: flex;
@@ -229,116 +222,131 @@ const Ideas = styled.div`
 `;
 
 const Teams = () => {
-
   const { id } = useParams();
-  const [item, setItems] = useState(data[0]);
+  const [item, setItems] = useState([]);
+  const [projects, setProjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const { currentUser } = useSelector((state) => state.user);
+  const getTeamDetails = async () => {
+    await axios
+      .get(`/team/${id}`)
+      .then((res) => {
+        setItems(res.data.Team);
+        setProjects(res.data.projects);
+      })
+      .then(() => {
+        setLoading(false);
+      });
+  };
   useEffect(() => {
     window.scrollTo(0, 0);
-    setItems(data[id - 1]);
-  }, [id]);
+    getTeamDetails();
+  }, [id, currentUser]);
 
 
   return (
     <Container>
-      <Header>
-        <Title>{id}</Title>
-        <Desc>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Neque
-          accusantium vel labore. Officiis rem, eos officia illum recusandae
-          molestias, odio quibusdam dolores reprehenderit non ea ad quia veniam
-          obcaecati debitis.
-        </Desc>
-        <Members>
-          <AvatarGroup>
-            {members.map((member) => (
-              <Avatar src={member.image} />
-            ))}
-          </AvatarGroup>
-          <InviteButton>
-            <PersonAdd sx={{ fontSize: "16px" }} />
-            Invite
-          </InviteButton>
-        </Members>
-        <Hr />
-      </Header>
-      <Body>
-        <Work>
-          <Text style={{fontSize: '20px'}}>Projects</Text>
-          <Column>
-            <ItemWrapper>
-              <Top>
-                <Text>
-                  🔆️ In Progress
-                  <Span>(5)</Span>
-                </Text>
-                <AddNewButton>
-                  <Add />
-                </AddNewButton>
-              </Top>
-              <Wrapper>
-                {data
-                  .filter((item) => item.status == "In Progress")
-                  .map((item, idx) => (
-                    <Card
-                      key={idx}
-                      item={item}
-                      index={idx}
-                      status="In Progress"
-                      tagColor={tagColors[3]}
-                    />
-                  ))}
-              </Wrapper>
-            </ItemWrapper>
-            <ItemWrapper>
-              <Top>
-                <Text>📝 Completed
-                  <Span>(5)</Span>
-                </Text>
-              </Top>
-              <Wrapper>
-                {data
-                  .filter((item) => item.status == "Completed")
-                  .map((item, idx) => (
-                    <Card
-                      key={idx}
-                      item={item}
-                      index={idx}
-                      status="Completed"
-                      tagColor={tagColors[3]}
-                    />
-                  ))}
-              </Wrapper>
-            </ItemWrapper>
-          </Column>
-        </Work>
-        <HrHor />
-        <Extra>
-          <SubCards>
-            <SubCardTop>
-              <SubCardsTitle>Members</SubCardsTitle>
-              <IcoBtn>
-                <Edit sx={{ fontSize: "16px" }} />
-              </IcoBtn>
-            </SubCardTop>
-            {members.map((member) => (
-              <MemberCard member={member} />
-            ))}
-          </SubCards>
-          <SubCards>
-            <SubCardTop>
-              <SubCardsTitle>Idea List</SubCardsTitle>
-              <IcoBtn>
-                <Add sx={{ fontSize: "20px" }} />
-              </IcoBtn>
-            </SubCardTop>
-            <Ideas>
-              {ideas.map((i, id) => (
+      {loading ? (
+        <>Loading</>
+      ) : (
+        <>
+          <Header>
+            <Title>{item.name}</Title>
+            <Desc>{item.desc}</Desc>
+            <Members>
+              <AvatarGroup>
+                {item.members.map((member) => (
+                  <Avatar alt={member.name} sx={{width: '38px', height: '38px', marginRight: '-12px'}} src={member.img}>{member.name.charAt(0)}</Avatar>
+                ))}
+              </AvatarGroup>
+              <InviteButton>
+                <PersonAdd sx={{ fontSize: "16px" }} />
+                Invite
+              </InviteButton>
+            </Members>
+            <Hr />
+          </Header>
+          <Body>
+            <Work>
+              <Text style={{ fontSize: "20px" }}>Projects</Text>
+              <Column>
+                <ItemWrapper>
+                  <Top>
+                    <Text>
+                      🔆️ In Progress
+                      <Span>({projects.filter((item) => item.status == "In Progress").length})</Span>
+                    </Text>
+                    <AddNewButton>
+                      <Add />
+                    </AddNewButton>
+                  </Top>
+                  <Wrapper>
+                    {projects
+                      .filter((item) => item.status == "Working")
+                      .map((item, idx) => (
+                        <Card
+                          key={idx}
+                          item={item}
+                          index={idx}
+                          status="In Progress"
+                          tagColor={tagColors[3]}
+                        />
+                      ))}
+                  </Wrapper>
+                </ItemWrapper>
+                <ItemWrapper>
+                  <Top>
+                    <Text>
+                      📝 Completed
+                      <Span>({projects.filter((item) => item.status == "Completed").length})</Span>
+                    </Text>
+                  </Top>
+                  <Wrapper>
+                    {projects
+                      .filter((item) => item.status == "Completed")
+                      .map((item, idx) => (
+                        <Card
+                          key={idx}
+                          item={item}
+                          index={idx}
+                          status="Completed"
+                          tagColor={tagColors[3]}
+                        />
+                      ))}
+                  </Wrapper>
+                </ItemWrapper>
+              </Column>
+            </Work>
+            <HrHor />
+            <Extra>
+              <SubCards>
+                <SubCardTop>
+                  <SubCardsTitle>Members</SubCardsTitle>
+                  <IcoBtn>
+                    <Edit sx={{ fontSize: "16px" }} />
+                  </IcoBtn>
+                </SubCardTop>
+                {item.members.map((member) => (
+                  <MemberCard member={member} />
+                ))}
+              </SubCards>
+              <SubCards>
+                <SubCardTop>
+                  <SubCardsTitle>Idea List</SubCardsTitle>
+                  <IcoBtn>
+                    <Add sx={{ fontSize: "20px" }} />
+                  </IcoBtn>
+                </SubCardTop>
+                <Ideas>
+                  {/*ideas.map((i, id) => (
                 <IdeaCard idea={i} no={id} key={id} />
-              ))}
-            </Ideas>
-          </SubCards>
-        </Extra>
-      </Body>
+              ))*/}
+                </Ideas>
+              </SubCards>
+            </Extra>
+          </Body>
+        </>
+      )}
     </Container>
   );
 };

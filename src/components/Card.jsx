@@ -202,7 +202,7 @@ const Card = ({ tagColor, item, index, status }) => {
             </Time>
             <AvatarGroup>
               {item.members.map((member) => (
-                <Avatar sx={{marginRight: '-12px', width: '36px', height: '36px'}}  src={member.img} />
+                <Avatar sx={{marginRight: '-12px', width: '36px', height: '36px'}}  src={member.img} >{member.name.charAt(0)}</Avatar>
               ))}
             </AvatarGroup>
           </Bottom>
