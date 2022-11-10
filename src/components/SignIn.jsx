@@ -32,7 +32,7 @@ const Container = styled.div`
 `;
 
 const Wrapper = styled.div`
-  width: 420px;
+  width: 360px;
   border-radius: 30px;
   background-color: ${({ theme }) => theme.bgLighter};
   color: ${({ theme }) => theme.text};
@@ -43,13 +43,13 @@ const Wrapper = styled.div`
 `;
 
 const Title = styled.div`
-  font-size: 26px;
+  font-size: 22px;
   font-weight: 500;
   color: ${({ theme }) => theme.text};
   margin: 16px 28px;
 `;
 const OutlinedBox = styled.div`
-  height: 50px;
+  height: 44px;
   border-radius: 12px;
   border: 1px solid ${({ theme }) => theme.soft2};
   color: ${({ theme }) => theme.soft2};
@@ -73,7 +73,7 @@ const OutlinedBox = styled.div`
     background: ${theme.primary};
     color: white;`}
   margin: 3px 20px;
-  font-size: 16px;
+  font-size: 14px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -81,7 +81,7 @@ const OutlinedBox = styled.div`
   padding: 0px 14px;
 `;
 const GoogleIcon = styled.img`
-  width: 24px;
+  width: 22px;
 `;
 const Divider = styled.div`
   display: flex;
@@ -89,7 +89,7 @@ const Divider = styled.div`
   justify-content: center;
   align-items: center;
   color: ${({ theme }) => theme.soft};
-  font-size: 18px;
+  font-size: 14px;
   font-weight: 600;
 `;
 const Line = styled.div`
@@ -103,7 +103,7 @@ const Line = styled.div`
 const TextInput = styled.input`
   width: 100%;
   border: none;
-  font-size: 16px;
+  font-size: 14px;
   border-radius: 3px;
   background-color: transparent;
   outline: none;
@@ -111,7 +111,7 @@ const TextInput = styled.input`
 `;
 
 const LoginText = styled.div`
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 500;
   color: ${({ theme }) => theme.soft2};
   margin: 20px 20px 30px 20px;
@@ -125,7 +125,7 @@ const Span = styled.span`
 
 const Error = styled.div`
   color: red;
-  font-size: 12px;
+  font-size: 10px;
   margin: 2px 26px 8px 26px;
   display: block;
   ${({ error, theme }) =>
@@ -298,7 +298,7 @@ const SignIn = ({ setSignInOpen, setSignUpOpen }) => {
             <Line />
           </Divider>
           <OutlinedBox style={{ marginTop: "24px" }}>
-            <EmailRounded style={{ paddingRight: "12px" }} />
+            <EmailRounded sx={{fontSize: '20px'}} style={{ paddingRight: "12px" }} />
             <TextInput
               placeholder="Email Id"
               type="email"
@@ -307,7 +307,7 @@ const SignIn = ({ setSignInOpen, setSignUpOpen }) => {
           </OutlinedBox>
           <Error error={emailError}>{emailError}</Error>
           <OutlinedBox>
-            <PasswordRounded style={{ paddingRight: "12px" }} />
+            <PasswordRounded sx={{fontSize: '20px'}} style={{ paddingRight: "12px" }} />
             <TextInput
               placeholder="Password"
               type={values.showPassword ? "text" : "password"}
@@ -319,7 +319,7 @@ const SignIn = ({ setSignInOpen, setSignUpOpen }) => {
                 setValues({ ...values, showPassword: !values.showPassword })
               }
             >
-              {values.showPassword ? <Visibility /> : <VisibilityOff />}
+              {values.showPassword ? <Visibility sx={{fontSize: '20px'}} /> : <VisibilityOff sx={{fontSize: '20px'}} />}
             </IconButton>
           </OutlinedBox>
           <Error error={credentialError}>{credentialError}</Error>

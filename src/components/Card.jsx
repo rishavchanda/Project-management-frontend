@@ -7,7 +7,6 @@ import { useDrag, useDrop } from "react-dnd";
 import ITEM_TYPE from "../data/types";
 import { tagColors } from "../data/data";
 import { Link } from "react-router-dom";
-import {format} from 'timeago.js';
 import axios from "axios";
 import Avatar from "@mui/material/Avatar";
 
@@ -177,7 +176,7 @@ const Card = ({ tagColor, item, index, status }) => {
           </Tags>
           <Bottom>
             <Time>
-              <TimelapseRounded sx={{fontSize: '18px'}}/> Updated {format(item.updatedAt)}
+              <TimelapseRounded sx={{fontSize: '18px'}}/> Updated {item.updatedAt}
             </Time>
             <AvatarGroup>
               {item.members.map((member) => (
