@@ -1,6 +1,7 @@
 {
   "name": "frontend",
   "version": "0.1.0",
+  "homepage": "https://rishavchanda.github.io/Project-management-frontend/",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.10.4",
@@ -15,6 +16,7 @@
     "firebase": "^9.13.0",
     "gh-pages": "^4.0.0",
     "react": "^18.2.0",
+    "react-cookie": "^4.1.1",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^18.2.0",

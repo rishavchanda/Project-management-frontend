@@ -7,19 +7,19 @@ import {
   VisibilityOff,
   TroubleshootRounded,
 } from "@mui/icons-material";
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Google from "../Images/google.svg";
 import { IconButton, Modal } from "@mui/material";
 import { loginFailure, loginStart, loginSuccess } from "../redux/userSlice";
-import { openSnackbar} from "../redux/snackbarSlice";
+import { openSnackbar } from "../redux/snackbarSlice";
 import { useDispatch } from "react-redux";
 import axios from "axios";
 import CircularProgress from "@mui/material/CircularProgress";
 import validator from "validator";
 import { auth, provider } from "../firebase";
 import { signInWithPopup } from "firebase/auth";
-
+import { googleSignIn, signUp } from "../api/index";
 
 const Container = styled.div`
   width: 100%;
@@ -160,25 +160,22 @@ const SignUp = ({ setSignUpOpen, setSignInOpen }) => {
       setDisabled(true);
       setLoading(true);
       try {
-        const res = await axios.post(`/auth/signup`, {
-          name,
-          email,
-          password,
+        signUp({ name, email, password }).then((res) => {
+          if (res.status === 200) {
+            dispatch(
+              openSnackbar({ message: res.data.message, severity: "success" })
+            );
+            setLoading(false);
+            setDisabled(false);
+            setSignUpOpen(false);
+            setSignInOpen(true);
+          } else {
+            dispatch(loginFailure());
+            setcredentialError(`${res.data.message}`);
+            setLoading(false);
+            setDisabled(false);
+          }
         });
-        if (res.status === 200) {
-          dispatch(
-            openSnackbar({ message: res.data.message, severity: "success" })
-          );
-          setLoading(false);
-          setDisabled(false);
-          setSignUpOpen(false);
-          setSignInOpen(true);
-        } else {
-          dispatch(loginFailure());
-          setcredentialError(`${res.data.message}`);
-          setLoading(false);
-          setDisabled(false);
-        }
       } catch (err) {
         dispatch(loginFailure());
         setLoading(false);
@@ -202,13 +199,15 @@ const SignUp = ({ setSignUpOpen, setSignInOpen }) => {
   };
 
   useEffect(() => {
-    if (email !== "" )
-      validateEmail();
-    if (password !== "") 
-      validatePassword();
-    if (name !== "")
-      validateName();
-    if (name !== "" && validator.isEmail(email) && passwordCorrect && nameCorrect) {
+    if (email !== "") validateEmail();
+    if (password !== "") validatePassword();
+    if (name !== "") validateName();
+    if (
+      name !== "" &&
+      validator.isEmail(email) &&
+      passwordCorrect &&
+      nameCorrect
+    ) {
       setDisabled(false);
     } else {
       setDisabled(true);
@@ -259,39 +258,35 @@ const SignUp = ({ setSignUpOpen, setSignInOpen }) => {
     }
   };
 
-
-  
   //Google SignIn
   const handleGoogleLogin = async () => {
     dispatch(loginStart());
     signInWithPopup(auth, provider)
       .then((result) => {
-        axios
-          .post("http://localhost:8800/api/auth/google", {
-            name: result.user.displayName,
-            email: result.user.email,
-            img: result.user.photoURL,
-          })
-          .then((res) => {
-            if (res.status === 200) {
-              dispatch(loginSuccess(res.data));
-              setSignUpOpen(false);
-              dispatch(
-                openSnackbar({
-                  message: "Account Created Successfully",
-                  severity: "success",
-                })
-              );
-            } else {
-              dispatch(loginFailure());
-              dispatch(
-                openSnackbar({
-                  message: res.data.message,
-                  severity: "error",
-                })
-              );
-            }
-          });
+        googleSignIn({
+          name: result.user.displayName,
+          email: result.user.email,
+          img: result.user.photoURL,
+        }).then((res) => {
+          if (res.status === 200) {
+            dispatch(loginSuccess(res.data));
+            setSignUpOpen(false);
+            dispatch(
+              openSnackbar({
+                message: "Account Created Successfully",
+                severity: "success",
+              })
+            );
+          } else {
+            dispatch(loginFailure());
+            dispatch(
+              openSnackbar({
+                message: res.data.message,
+                severity: "error",
+              })
+            );
+          }
+        });
       })
       .catch((err) => {
         dispatch(loginFailure());
@@ -333,7 +328,10 @@ const SignUp = ({ setSignUpOpen, setSignInOpen }) => {
             <Line />
           </Divider>
           <OutlinedBox style={{ marginTop: "24px" }}>
-            <Person sx={{fontSize: '20px'}} style={{ paddingRight: "12px" }} />
+            <Person
+              sx={{ fontSize: "20px" }}
+              style={{ paddingRight: "12px" }}
+            />
             <TextInput
               placeholder="Full Name"
               type="text"
@@ -341,7 +339,10 @@ const SignUp = ({ setSignUpOpen, setSignInOpen }) => {
             />
           </OutlinedBox>
           <OutlinedBox>
-            <EmailRounded sx={{fontSize: '20px'}} style={{ paddingRight: "12px" }} />
+            <EmailRounded
+              sx={{ fontSize: "20px" }}
+              style={{ paddingRight: "12px" }}
+            />
             <TextInput
               placeholder="Email Id"
               type="email"
@@ -350,14 +351,26 @@ const SignUp = ({ setSignUpOpen, setSignInOpen }) => {
           </OutlinedBox>
           <Error error={emailError}>{emailError}</Error>
           <OutlinedBox>
-            <PasswordRounded sx={{fontSize: '20px'}} style={{ paddingRight: "12px" }} />
+            <PasswordRounded
+              sx={{ fontSize: "20px" }}
+              style={{ paddingRight: "12px" }}
+            />
             <TextInput
               type={values.showPassword ? "text" : "password"}
               placeholder="password"
               onChange={(e) => setPassword(e.target.value)}
             />
-            <IconButton color="inherit" onClick={() => setValues({ ...values, showPassword: !values.showPassword })}>
-              {values.showPassword ? <Visibility sx={{fontSize: '20px'}} /> : <VisibilityOff sx={{fontSize: '20px'}} />}
+            <IconButton
+              color="inherit"
+              onClick={() =>
+                setValues({ ...values, showPassword: !values.showPassword })
+              }
+            >
+              {values.showPassword ? (
+                <Visibility sx={{ fontSize: "20px" }} />
+              ) : (
+                <VisibilityOff sx={{ fontSize: "20px" }} />
+              )}
             </IconButton>
           </OutlinedBox>
           <Error error={credentialError}>{credentialError}</Error>

@@ -19,6 +19,7 @@ import { logout } from "../redux/userSlice";
 import { openSnackbar } from "../redux/snackbarSlice";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import { getUsers } from "../api/index";
 
 const Container = styled.div`
   flex: 1.3;
@@ -98,21 +99,19 @@ const Menu = ({ darkMode, setDarkMode, setMenuOpen }) => {
   const {currentUser} = useSelector(state => state.user);
 
   const getteams = async () => {
-    await axios
-      .get("/users/find")
+    getUsers()
       .then((res) => {
         setTeams(res.data.teams);
       })
       .catch((err) => {
         dispatch(openSnackbar({ message: err.message, type: "error" }));
       });
-    console.log(team);
   };
 
   useEffect(() => {
     getteams();
   }, [currentUser]);
-
+  console.log(team);
   return (
     <Container setMenuOpen={setMenuOpen}>
       <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>

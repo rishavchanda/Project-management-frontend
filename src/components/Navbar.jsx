@@ -7,7 +7,7 @@ import SignUp from "./SignUp";
 import SignIn from "./SignIn";
 import MenuIcon from "@mui/icons-material/Menu";
 import { IconButton } from "@mui/material";
-import {NotificationsRounded } from "@mui/icons-material";
+import { NotificationsRounded } from "@mui/icons-material";
 import Badge from "@mui/material/Badge";
 import { useDispatch } from "react-redux";
 import Avatar from "@mui/material/Avatar";
@@ -29,6 +29,9 @@ const Wrapper = styled.div`
   align-items: center;
   justify-content: flex-end;
   padding: 0px 14px;
+  @media screen and (max-width: 480px) {
+    padding: 0px 4px;
+  }
   position: relative;
 `;
 
@@ -38,6 +41,9 @@ const IcoButton = styled(IconButton)`
 
 const Search = styled.div`
   width: 40%;
+  @media screen and (max-width: 480px) {
+    width: 50%;
+  }
   left: 0px;
   right: 0px;
   margin: auto;
@@ -89,7 +95,6 @@ const User = styled.div`
   color: ${({ theme }) => theme.text};
 `;
 
-
 const Navbar = ({ menuOpen, setMenuOpen }) => {
   const [SignUpOpen, setSignUpOpen] = useState(false);
   const [SignInOpen, setSignInOpen] = useState(false);
@@ -100,24 +105,22 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
     if (!currentUser && !SignUpOpen) {
       setSignInOpen(true);
       setSignUpOpen(false);
-    }else if(!currentUser && SignUpOpen){
+    } else if (!currentUser && SignUpOpen) {
       setSignInOpen(false);
       setSignUpOpen(true);
     }
     console.log(currentUser);
     if (currentUser && !currentUser.verified) {
-      setVerifyEmail(true)
-    }else{
-      setVerifyEmail(false)
+      setVerifyEmail(true);
+    } else {
+      setVerifyEmail(false);
     }
   }, [currentUser, SignInOpen, SignUpOpen, setVerifyEmail]);
-
-
 
   //Open the account dialog
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
-  const id = open ? 'simple-popover' : undefined;
+  const id = open ? "simple-popover" : undefined;
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -160,7 +163,9 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
                       src={currentUser.img}
                       alt={currentUser.name}
                       sx={{ width: 34, height: 34 }}
-                    >{currentUser.name.charAt(0)}</Avatar>
+                    >
+                      {currentUser.name.charAt(0)}
+                    </Avatar>
                   </Badge>
                 </IcoButton>
               </>
@@ -178,9 +183,16 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
       {SignInOpen && (
         <SignIn setSignInOpen={setSignInOpen} setSignUpOpen={setSignUpOpen} />
       )}
-      {currentUser && <AccountDialog open={open} anchorEl={anchorEl} id={id} handleClose={handleClose} currentUser={currentUser}/>}
-      </>
-      
+      {currentUser && (
+        <AccountDialog
+          open={open}
+          anchorEl={anchorEl}
+          id={id}
+          handleClose={handleClose}
+          currentUser={currentUser}
+        />
+      )}
+    </>
   );
 };
 

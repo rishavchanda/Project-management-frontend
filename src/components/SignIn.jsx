@@ -18,6 +18,7 @@ import axios from "axios";
 import validator from "validator";
 import { auth, provider } from "../firebase";
 import { signInWithPopup } from "firebase/auth";
+import { signIn,googleSignIn } from "../api/index";
 
 const Container = styled.div`
   width: 100%;
@@ -161,38 +162,36 @@ const SignIn = ({ setSignInOpen, setSignUpOpen }) => {
       setDisabled(true);
       setLoading(true);
       try {
-        const res = await axios.post(`/auth/signin`, {
-          email,
-          password,
+        signIn({ email, password }).then((res) => {
+          if (res.status === 200) {
+            dispatch(loginSuccess(res.data));
+            setLoading(false);
+            setDisabled(false);
+            setSignInOpen(false);
+            dispatch(
+              openSnackbar({
+                message: "Logged In Successfully",
+                severity: "success",
+              })
+            );
+          } else if (res.status === 203) {
+            dispatch(loginFailure());
+            setLoading(false);
+            setDisabled(false);
+            setcredentialError(res.data.message);
+            dispatch(
+              openSnackbar({
+                message: "Account Not Verified",
+                severity: "error",
+              })
+            );
+          } else {
+            dispatch(loginFailure());
+            setLoading(false);
+            setDisabled(false);
+            setcredentialError(`Invalid Credentials : ${res.data.message}`);
+          }
         });
-        if (res.status === 200) {
-          dispatch(loginSuccess(res.data));
-          setLoading(false);
-          setDisabled(false);
-          setSignInOpen(false);
-          dispatch(
-            openSnackbar({
-              message: "Logged In Successfully",
-              severity: "success",
-            })
-          );
-        } else if (res.status === 203) {
-          dispatch(loginFailure());
-          setLoading(false);
-          setDisabled(false);
-          setcredentialError(res.data.message);
-          dispatch(
-            openSnackbar({
-              message: "Account Not Verified",
-              severity: "error",
-            })
-          );
-        } else {
-          dispatch(loginFailure());
-          setLoading(false);
-          setDisabled(false);
-          setcredentialError(`Invalid Credentials : ${res.data.message}`);
-        }
       } catch (err) {
         dispatch(loginFailure());
         setLoading(false);
@@ -231,13 +230,11 @@ const SignIn = ({ setSignInOpen, setSignUpOpen }) => {
     dispatch(loginStart());
     signInWithPopup(auth, provider)
       .then((result) => {
-        axios
-          .post("/auth/google", {
-            name: result.user.displayName,
-            email: result.user.email,
-            img: result.user.photoURL,
-          })
-          .then((res) => {
+        googleSignIn({
+          name: result.user.displayName,
+          email: result.user.email,
+          img: result.user.photoURL,
+        }).then((res) => {
             if (res.status === 200) {
               dispatch(loginSuccess(res.data));
               setSignInOpen(false);
@@ -298,7 +295,10 @@ const SignIn = ({ setSignInOpen, setSignUpOpen }) => {
             <Line />
           </Divider>
           <OutlinedBox style={{ marginTop: "24px" }}>
-            <EmailRounded sx={{fontSize: '20px'}} style={{ paddingRight: "12px" }} />
+            <EmailRounded
+              sx={{ fontSize: "20px" }}
+              style={{ paddingRight: "12px" }}
+            />
             <TextInput
               placeholder="Email Id"
               type="email"
@@ -307,7 +307,10 @@ const SignIn = ({ setSignInOpen, setSignUpOpen }) => {
           </OutlinedBox>
           <Error error={emailError}>{emailError}</Error>
           <OutlinedBox>
-            <PasswordRounded sx={{fontSize: '20px'}} style={{ paddingRight: "12px" }} />
+            <PasswordRounded
+              sx={{ fontSize: "20px" }}
+              style={{ paddingRight: "12px" }}
+            />
             <TextInput
               placeholder="Password"
               type={values.showPassword ? "text" : "password"}
@@ -319,7 +322,11 @@ const SignIn = ({ setSignInOpen, setSignUpOpen }) => {
                 setValues({ ...values, showPassword: !values.showPassword })
               }
             >
-              {values.showPassword ? <Visibility sx={{fontSize: '20px'}} /> : <VisibilityOff sx={{fontSize: '20px'}} />}
+              {values.showPassword ? (
+                <Visibility sx={{ fontSize: "20px" }} />
+              ) : (
+                <VisibilityOff sx={{ fontSize: "20px" }} />
+              )}
             </IconButton>
           </OutlinedBox>
           <Error error={credentialError}>{credentialError}</Error>

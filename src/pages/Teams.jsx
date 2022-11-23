@@ -3,11 +3,7 @@ import { Fragment, useState, useRef } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
-import {
-  Add,
-  Edit,
-  PersonAdd,
-} from "@mui/icons-material";
+import { Add, Edit, PersonAdd } from "@mui/icons-material";
 import { data, tools, members, ideas, tagColors } from "../data/data";
 import Card from "../components/Card";
 import MemberCard from "../components/MemberCard";
@@ -17,9 +13,16 @@ import IdeaCard from "../components/IdeaCard";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import Avatar from "@mui/material/Avatar";
+import { openSnackbar } from "../redux/snackbarSlice";
+import { useDispatch } from "react-redux";
+import InviteMembers from "../components/InviteMembers";
+import { getTeams} from "../api/index";
 
 const Container = styled.div`
   padding: 14px 14px;
+  @media screen and (max-width: 480px) {
+    padding: 10px 4px;
+  }
 `;
 
 const Header = styled.div``;
@@ -28,9 +31,17 @@ const Column = styled.div`
   display: flex;
   flex-direction: row;
   margin: 12px 0px;
+  @media screen and (max-width: 480px) {
+    margin: 6px 0px;
+    flex-direction: column;
+  }
 `;
 
 const Title = styled.div`
+  width: 100%;
+  @media screen and (max-width: 480px) {
+    font-size: 24px;
+  }
   font-size: 30px;
   font-weight: 500;
   color: ${({ theme }) => theme.text};
@@ -103,6 +114,10 @@ const Body = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: start;
+  @media screen and (max-width: 480px) {
+    flex-direction: column;
+    gap: 10px;
+  }
   gap: 20px;
 `;
 
@@ -113,6 +128,9 @@ const Work = styled.div`
 const ItemWrapper = styled.div`
   width: 100%;
   height: 100%;
+  @media screen and (max-width: 480px) {
+    width: 95%;
+  }
   padding: 4px 8px;
   text-align: left;
   margin: 2px;
@@ -222,21 +240,32 @@ const Teams = () => {
   const [item, setItems] = useState([]);
   const [projects, setProjects] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [invitePopup, setInvitePopup] = useState(false);
   const { currentUser } = useSelector((state) => state.user);
+  const[user,setUser]=useState(JSON.parse(localStorage.getItem('user')))
+  const dispatch = useDispatch();
   const getTeamDetails = async () => {
-    await axios
-      .get(`/team/${id}`)
+    getTeams(id)
       .then((res) => {
         setItems(res.data.Team);
         setProjects(res.data.projects);
       })
       .then(() => {
         setLoading(false);
+      })
+      .catch((err) => {
+        dispatch(
+          openSnackbar({
+            message: err.response.data.message,
+            severity: "error",
+          })
+        );
       });
   };
   useEffect(() => {
     window.scrollTo(0, 0);
     getTeamDetails();
+    setUser(JSON.parse(localStorage.getItem('user')))
   }, [id, currentUser]);
 
 
@@ -252,15 +281,24 @@ const Teams = () => {
             <Members>
               <AvatarGroup>
                 {item.members.map((member) => (
-                  <Avatar alt={member.name} sx={{width: '38px', height: '38px', marginRight: '-12px'}} src={member.img}>{member.name.charAt(0)}</Avatar>
+                  <Avatar
+                    alt={member.name}
+                    sx={{ width: "38px", height: "38px", marginRight: "-12px" }}
+                    src={member.img}
+                  >
+                    {member.name.charAt(0)}
+                  </Avatar>
                 ))}
               </AvatarGroup>
-              <InviteButton>
+              <InviteButton onClick={ () => setInvitePopup(true)}>
                 <PersonAdd sx={{ fontSize: "16px" }} />
                 Invite
               </InviteButton>
             </Members>
             <Hr />
+            {invitePopup && (
+              <InviteMembers setInvitePopup={setInvitePopup} id={id} teamInvite={true} />
+            )}
           </Header>
           <Body>
             <Work>
@@ -270,7 +308,15 @@ const Teams = () => {
                   <Top>
                     <Text>
                       🔆️ In Progress
-                      <Span>({projects.filter((item) => item.status == "In Progress").length})</Span>
+                      <Span>
+                        (
+                        {
+                          projects.filter(
+                            (item) => item.status == "In Progress"
+                          ).length
+                        }
+                        )
+                      </Span>
                     </Text>
                     <AddNewButton>
                       <Add />
@@ -294,7 +340,15 @@ const Teams = () => {
                   <Top>
                     <Text>
                       📝 Completed
-                      <Span>({projects.filter((item) => item.status == "In Progress").length})</Span>
+                      <Span>
+                        (
+                        {
+                          projects.filter(
+                            (item) => item.status == "In Progress"
+                          ).length
+                        }
+                        )
+                      </Span>
                     </Text>
                   </Top>
                   <Wrapper>

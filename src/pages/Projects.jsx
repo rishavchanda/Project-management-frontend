@@ -8,6 +8,9 @@ import { statuses, data, tagColors } from "../data/data";
 import { useDispatch } from "react-redux";
 import { openSnackbar } from "../redux/snackbarSlice";
 import { useSelector } from "react-redux";
+import Skeleton from "@mui/material/Skeleton";
+import { useCookies } from "react-cookie";
+import { getProjects } from "../api/index";
 
 const Container = styled.div`
   width: 100%;
@@ -16,12 +19,18 @@ const Container = styled.div`
 const Column = styled.div`
   display: flex;
   flex-direction: row;
+  @media screen and (max-width: 480px) {
+    flex-direction: column;
+  }
   justify-content: space-between;
   margin: 12px 0px;
 `;
 const ItemWrapper = styled.div`
   width: 100%;
   height: 100%;
+  @media screen and (max-width: 480px) {
+    width: 97%;
+  }
   padding: 4px;
   text-align: left;
   margin: 2px;
@@ -43,15 +52,22 @@ const Wrapper = styled.div`
 const Projects = () => {
   const dispatch = useDispatch();
   const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
   const { currentUser } = useSelector((state) => state.user);
+  const [cookies, setCookie] = useCookies();
   const getprojects = async () => {
-    await axios
-      .get("/users/projects")
-      .then((res) => {
+    getProjects().then((res) => {
         setData(res.data);
+        setLoading(false);
       })
-      .then((err) => {
-        dispatch(openSnackbar({ message: err.message, type: "error" }));
+      .catch((err) => {
+        setLoading(false);
+        dispatch(
+          openSnackbar({
+            message: err.response.data.message,
+            severity: "error",
+          })
+        );
       });
   };
 
@@ -59,7 +75,7 @@ const Projects = () => {
     getprojects();
     window.scrollTo(0, 0);
   }, [currentUser]);
-
+  console.log(cookies.user)
   return (
     <Container>
       <Column>
@@ -71,17 +87,34 @@ const Projects = () => {
                 ({data.filter((item) => item.status == s.status).length})
               </Span>
               <Wrapper>
-                {data
-                  .filter((item) => item.status == s.status)
-                  .map((item, idx) => (
-                    <Item
-                      key={item._id}
-                      item={item}
-                      index={idx}
-                      status={s}
-                      tagColor={tagColors[3]}
+                {loading ? (
+                  <>
+                    <Skeleton
+                      sx={{ marginBottom: "12px", borderRadius: "20px" }}
+                      variant="rounded"
+                      width={290}
+                      height={240}
                     />
-                  ))}
+                    <Skeleton
+                      sx={{ marginBottom: "12px", borderRadius: "20px" }}
+                      variant="rounded"
+                      width={290}
+                      height={240}
+                    />
+                  </>
+                ) : (
+                  data
+                    .filter((item) => item.status == s.status)
+                    .map((item, idx) => (
+                      <Item
+                        key={item._id}
+                        item={item}
+                        index={idx}
+                        status={s}
+                        tagColor={tagColors[3]}
+                      />
+                    ))
+                )}
                 {/*<DropWrapper onDrop={onDrop} status={s.status}> 
                   
               

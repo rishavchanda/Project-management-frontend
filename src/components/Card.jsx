@@ -9,6 +9,7 @@ import { tagColors } from "../data/data";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import Avatar from "@mui/material/Avatar";
+import {format} from 'timeago.js';
 
 const Container = styled.div`
   padding: 14px 14px;
@@ -176,7 +177,7 @@ const Card = ({ tagColor, item, index, status }) => {
           </Tags>
           <Bottom>
             <Time>
-              <TimelapseRounded sx={{fontSize: '18px'}}/> Updated {item.updatedAt}
+              <TimelapseRounded sx={{fontSize: '18px'}}/> Updated {format(item.updatedAt)}
             </Time>
             <AvatarGroup>
               {item.members.map((member) => (

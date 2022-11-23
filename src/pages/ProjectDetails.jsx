@@ -20,9 +20,16 @@ import ToolsCard from "../components/ToolsCard";
 import IdeaCard from "../components/IdeaCard";
 import axios from "axios";
 import Avatar from "@mui/material/Avatar";
+import { openSnackbar} from "../redux/snackbarSlice";
+import { useDispatch } from "react-redux";
+import { getProjectDetails } from "../api/index";
+import InviteMembers from "../components/InviteMembers";
 
 const Container = styled.div`
   padding: 14px 14px;
+  @media screen and (max-width: 480px) {
+    padding: 10px 10px;
+  }
 `;
 
 const Header = styled.div``;
@@ -32,10 +39,17 @@ const Column = styled.div`
   ${(props) =>
     props.alignment ? "flex-direction: row;" : "flex-direction: column;"}
   margin: 12px 0px;
+  @media screen and (max-width: 480px) {
+    margin: 6px 0px;
+    flex-direction: column;
+  }
 `;
 
 const Title = styled.div`
   font-size: 24px;
+  @media screen and (max-width: 480px) {
+    font-size: 20px;
+  }
   font-weight: 500;
   color: ${({ theme }) => theme.text};
   margin-top: 6px;
@@ -124,6 +138,9 @@ const Body = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: start;
+  @media screen and (max-width: 480px) {
+    flex-direction: column;
+  }
   gap: 20px;
 `;
 
@@ -176,6 +193,10 @@ const ToggleButton = styled.div`
 const ItemWrapper = styled.div`
   width: 100%;
   height: 100%;
+  
+  @media screen and (max-width: 480px) {
+    width: 94%;
+  }
   padding: 4px 8px;
   text-align: left;
   margin: 2px;
@@ -293,16 +314,25 @@ const Ideas = styled.div`
 const ProjectDetails = () => {
   const { id } = useParams();
   const [item, setItems] = useState([]);
+  const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [invitePopup, setInvitePopup] = useState(false);
+  const dispatch = useDispatch();
   const getproject = async () => {
-    await axios
-      .get(`/project/${id}`)
+    getProjectDetails(id)
       .then((res) => {
-        setItems(res.data);
+        setItems(res.data.project);
+        setMembers(res.data.members);
       })
       .then(() => {
         setLoading(false);
-        console.log(item);
+      }).catch((err) => {
+        dispatch(
+          openSnackbar({
+            message: err.response.data.message,
+            severity: "error",
+          })
+        );
       });
   };
   useEffect(() => {
@@ -335,16 +365,19 @@ const ProjectDetails = () => {
             </Tags>
             <Members>
               <AvatarGroup>
-                {item.members.map((member) => (
+                {members.map((member) => (
               <Avatar sx={{marginRight: '-12px', width: '38px', height: '38px'}} src={member.img} />
             ))}
               </AvatarGroup>
-              <InviteButton>
+              <InviteButton onClick={ () => setInvitePopup(true)}>
                 <PersonAdd sx={{ fontSize: "12px" }} />
                 Invite
               </InviteButton>
             </Members>
             <Hr />
+            {invitePopup && (
+              <InviteMembers setInvitePopup={setInvitePopup} id={id} teamInvite={false}/>
+            )}
           </Header>
           <Body>
             <Work>
@@ -407,7 +440,7 @@ const ProjectDetails = () => {
                     <Edit sx={{ fontSize: "16px" }} />
                   </IcoBtn>
                 </SubCardTop>
-                {item.members.map((member) => (
+                {members.map((member) => (
               <MemberCard member={member} />
             ))}
               </SubCards>
