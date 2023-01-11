@@ -132,10 +132,6 @@ const tools = [
         icon: "https://cdn.worldvectorlogo.com/logos/adobe-xd.svg",
     },
     {
-        name: "Adobe Photoshop",
-        icon: "https://cdn.worldvectorlogo.com/logos/photoshop-cc-4.svg",
-    },
-    {
         name: "Github",
         icon: "https://cdn.worldvectorlogo.com/logos/github-icon.svg",
     },

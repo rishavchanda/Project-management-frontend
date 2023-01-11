@@ -89,7 +89,7 @@ const TeamIcon = styled(WorkspacesRounded)`
   margin-left: 2px;
 `;
 
-const Menu = ({ darkMode, setDarkMode, setMenuOpen }) => {
+const Menu = ({ darkMode, setDarkMode, setMenuOpen, setNewTeam }) => {
   const dispatch = useDispatch();
   const logoutUser = () => {
     dispatch(logout());
@@ -110,7 +110,7 @@ const Menu = ({ darkMode, setDarkMode, setMenuOpen }) => {
 
   useEffect(() => {
     getteams();
-  }, [currentUser]);
+  });
   console.log(team);
   return (
     <Container setMenuOpen={setMenuOpen}>
@@ -160,8 +160,8 @@ const Menu = ({ darkMode, setDarkMode, setMenuOpen }) => {
             </Item>
           </Link>
         ))}
-        <Item>
-          <Add sx={{ fontSize: "20px" }} />
+        <Item onClick={() => setNewTeam(true)}>
+          <Add sx={{ fontSize: "20px" }}  />
           New Team
         </Item>
         <Hr />

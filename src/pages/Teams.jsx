@@ -17,6 +17,7 @@ import { openSnackbar } from "../redux/snackbarSlice";
 import { useDispatch } from "react-redux";
 import InviteMembers from "../components/InviteMembers";
 import { getTeams} from "../api/index";
+import AddNewProject from "../components/AddNewProject";
 
 const Container = styled.div`
   padding: 14px 14px;
@@ -242,6 +243,7 @@ const Teams = () => {
   const [loading, setLoading] = useState(true);
   const [invitePopup, setInvitePopup] = useState(false);
   const { currentUser } = useSelector((state) => state.user);
+  const [newProject, setNewProject] = useState(false);
   const[user,setUser]=useState(JSON.parse(localStorage.getItem('user')))
   const dispatch = useDispatch();
   const getTeamDetails = async () => {
@@ -266,11 +268,12 @@ const Teams = () => {
     window.scrollTo(0, 0);
     getTeamDetails();
     setUser(JSON.parse(localStorage.getItem('user')))
-  }, [id, currentUser]);
+  }, [id, currentUser, newProject]);
 
 
   return (
     <Container>
+      { newProject && <AddNewProject setNewProject={setNewProject} teamId={id} teamProject={true}/>}
       {loading ? (
         <>Loading</>
       ) : (
@@ -307,18 +310,18 @@ const Teams = () => {
                 <ItemWrapper>
                   <Top>
                     <Text>
-                      🔆️ In Progress
+                      🔆️ Working
                       <Span>
                         (
                         {
                           projects.filter(
-                            (item) => item.status == "In Progress"
+                            (item) => item.status == "Working"
                           ).length
                         }
                         )
                       </Span>
                     </Text>
-                    <AddNewButton>
+                    <AddNewButton onClick={() => setNewProject(true)}>
                       <Add />
                     </AddNewButton>
                   </Top>
@@ -330,7 +333,7 @@ const Teams = () => {
                           key={idx}
                           item={item}
                           index={idx}
-                          status="In Progress"
+                          status="Working"
                           tagColor={tagColors[3]}
                         />
                       ))}
@@ -344,7 +347,7 @@ const Teams = () => {
                         (
                         {
                           projects.filter(
-                            (item) => item.status == "In Progress"
+                            (item) => item.status == "Completed"
                           ).length
                         }
                         )

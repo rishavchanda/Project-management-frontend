@@ -18,6 +18,7 @@ import ProjectDetails from './pages/ProjectDetails';
 import Teams from './pages/Teams';
 import ToastMessage from './components/ToastMessage';
 import { useSelector } from "react-redux";
+import AddNewTeam from './components/AddNewTeam';
 
 const Container = styled.div`
   display: flex; 
@@ -35,6 +36,7 @@ const Wrapper = styled.div`
 function App() {
   const [darkMode, setDarkMode] = useState(true);
   const [menuOpen, setMenuOpen] = useState(true);
+  const [newTeam, setNewTeam] = useState(false);
   const { open, message, severity } = useSelector((state) => state.snackbar);
 
   return (
@@ -42,10 +44,11 @@ function App() {
       <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
         <Container >
           <BrowserRouter>
-            {menuOpen && <Menu setMenuOpen={setMenuOpen} setDarkMode={setDarkMode} darkMode={darkMode} />}
+            {menuOpen && <Menu setMenuOpen={setMenuOpen} setDarkMode={setDarkMode} darkMode={darkMode} setNewTeam={setNewTeam}/>}
             <Main>
               <Navbar menuOpen={menuOpen} setMenuOpen={setMenuOpen} />
               <Wrapper>
+                {newTeam && <AddNewTeam setNewTeam={setNewTeam} />}
                 <Routes>
                   <Route path="/">
                     <Route index element={<Dashboard />} />

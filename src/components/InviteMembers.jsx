@@ -3,7 +3,6 @@ import { Modal } from "@mui/material";
 import React from "react";
 import styled from "styled-components";
 import { Avatar } from "@mui/material";
-import axios from "axios";
 import { useSelector } from "react-redux";
 import { inviteTeamMembers, inviteProjectMembers, searchUsers } from "../api/index";
 import { openSnackbar } from "../redux/snackbarSlice";
