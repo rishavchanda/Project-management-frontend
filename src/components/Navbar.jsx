@@ -12,6 +12,10 @@ import Badge from "@mui/material/Badge";
 import { useDispatch } from "react-redux";
 import Avatar from "@mui/material/Avatar";
 import AccountDialog from "./AccountDialog";
+import NotificationDialog from "./NotificationDialog";
+import { getUsers } from "../api/index";
+import { openSnackbar } from "../redux/snackbarSlice";
+import { logout } from "../redux/userSlice";
 
 const Container = styled.div`
   position: sticky;
@@ -101,6 +105,17 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
   const [verifyEmail, setVerifyEmail] = useState(false);
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user);
+  const [users, setUsers] = useState([]);
+  useEffect(() => {
+    getUsers().then((res) => {
+      setUsers(res.data);
+    }).catch((err) => { 
+      if(err.response.status === 401)
+      {
+        dispatch(logout())
+      }
+    });
+  }, [dispatch]);
   useEffect(() => {
     if (!currentUser && !SignUpOpen) {
       setSignInOpen(true);
@@ -115,7 +130,7 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
     } else {
       setVerifyEmail(false);
     }
-  }, [currentUser, SignInOpen, SignUpOpen, setVerifyEmail]);
+  }, [currentUser, SignInOpen, SignUpOpen, setVerifyEmail, users]);
 
   //Open the account dialog
   const [anchorEl, setAnchorEl] = useState(null);
@@ -127,6 +142,18 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
 
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  //Open the notification dialog
+  const [anchorEl2, setAnchorEl2] = useState(null);
+  const open2 = Boolean(anchorEl2);
+  const id2 = open2 ? "simple-popover" : undefined;
+  const notificationClick = (event) => {
+    setAnchorEl2(event.currentTarget);
+  };
+
+  const notificationClose = () => {
+    setAnchorEl2(null);
   };
 
   return (
@@ -143,7 +170,7 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
           <User>
             {currentUser ? (
               <>
-                <IcoButton>
+                <IcoButton aria-describedby={id} onClick={notificationClick}>
                   <Badge badgeContent={4} color="primary">
                     <NotificationsRounded />
                   </Badge>
@@ -189,6 +216,15 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
           anchorEl={anchorEl}
           id={id}
           handleClose={handleClose}
+          currentUser={currentUser}
+        />
+      )}
+      {currentUser && (
+        <NotificationDialog
+          open={open2}
+          anchorEl={anchorEl2}
+          id={id2}
+          handleClose={notificationClose}
           currentUser={currentUser}
         />
       )}

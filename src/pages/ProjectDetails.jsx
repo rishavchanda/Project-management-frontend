@@ -24,6 +24,7 @@ import { openSnackbar} from "../redux/snackbarSlice";
 import { useDispatch } from "react-redux";
 import { getProjectDetails } from "../api/index";
 import InviteMembers from "../components/InviteMembers";
+import AddWork from "../components/AddWork";
 
 const Container = styled.div`
   padding: 14px 14px;
@@ -410,6 +411,7 @@ const ProjectDetails = () => {
                     </AddNewButton>
                   </Top>
                   <Wrapper alignment={alignment}>
+                    <AddWork ProjectMembers={members}/>
                     <WorkCards status="In Progress" />
                     <WorkCards status="In Progress" />
                     <WorkCards status="In Progress" />

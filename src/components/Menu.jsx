@@ -105,6 +105,7 @@ const Menu = ({ darkMode, setDarkMode, setMenuOpen, setNewTeam }) => {
       })
       .catch((err) => {
         dispatch(openSnackbar({ message: err.message, type: "error" }));
+        console.log(err);
       });
   };
 
