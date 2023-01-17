@@ -29,12 +29,14 @@ export const getUsers = async () => await API.get('/users/find', {
     withCredentials: true
     });
 export const searchUsers = async (search) => await API.get(`users/search/${search}`, { withCredentials: true });
+export const notifications = async () => await API.get('/users/notifications', { withCredentials: true });
 
 //projects api
 export const createProject = async (project) => await API.post('project/', project, { withCredentials: true });
 export const getProjects = async () => await API.get(`/users/projects`, { withCredentials: true });
 export const getProjectDetails = async (id) => await API.get(`/project/${id}`, { withCredentials: true });
 export const inviteProjectMembers = async (id, members) => await API.post(`/project/invite/${id}`, members, { withCredentials: true });
+export const addWorks = async (id, works) => await API.post(`/project/works/${id}`, works, { withCredentials: true });
 
 
 //teams api

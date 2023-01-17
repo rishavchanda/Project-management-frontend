@@ -6,7 +6,8 @@ import { logout } from "../redux/userSlice";
 
 const Wrapper = styled.div`
   width: 100%;
-  min-width: 400px;
+  min-width: 300px;
+  max-width: 400px;
   height: 500px;
   display: flex;
   flex-direction: column;
@@ -62,11 +63,8 @@ const NotificationDialog = ({
   anchorEl,
   handleClose,
   currentUser,
+  notification,
 }) => {
-  const dispatch = useDispatch();
-  const logoutUser = () => {
-    dispatch(logout());
-  };
   return (
     <Popover
       anchorReference="anchorPosition"
@@ -80,28 +78,24 @@ const NotificationDialog = ({
       anchorPosition={{ top: 60, left: 1800 }}
     >
       <Wrapper>
-      <Heading>Notifications</Heading>
+        <Heading>Notifications</Heading>
 
-        <Item>
-          <Avatar sx={{ width: "32px", height: "32px" }} src={currentUser.img}>
-            {currentUser.name.charAt(0)}
-          </Avatar>
-          <Details>
-            <Title>{currentUser.name}</Title>
-            <Desc>{currentUser.email}</Desc>
-            <Hr />
-          </Details>
-        </Item>
-        <Item>
-          <Avatar sx={{ width: "32px", height: "32px" }} src={currentUser.img}>
-            {currentUser.name.charAt(0)}
-          </Avatar>
-          <Details>
-            <Title>{currentUser.name}</Title>
-            <Desc>{currentUser.email}</Desc>
-            <Hr />
-          </Details>
-        </Item>
+        {notification.map((item) => (
+          <Item>
+            <Avatar
+              sx={{ width: "32px", height: "32px" }}
+              src={currentUser.img}
+            >
+              {currentUser.name.charAt(0)}
+            </Avatar>
+            <Details>
+              <Title>{item.type} invitation</Title>
+              <Desc>{item.message}</Desc>
+              <Hr />
+            </Details>
+          </Item>
+        ))}
+
       </Wrapper>
     </Popover>
   );

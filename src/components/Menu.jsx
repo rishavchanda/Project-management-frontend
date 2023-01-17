@@ -19,7 +19,7 @@ import { logout } from "../redux/userSlice";
 import { openSnackbar } from "../redux/snackbarSlice";
 import axios from "axios";
 import { useSelector } from "react-redux";
-import { getUsers } from "../api/index";
+import { getUsers, notifications } from "../api/index";
 
 const Container = styled.div`
   flex: 1.3;
@@ -109,9 +109,10 @@ const Menu = ({ darkMode, setDarkMode, setMenuOpen, setNewTeam }) => {
       });
   };
 
+
   useEffect(() => {
     getteams();
-  });
+  }, [currentUser]);
   console.log(team);
   return (
     <Container setMenuOpen={setMenuOpen}>

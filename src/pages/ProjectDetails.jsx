@@ -411,7 +411,7 @@ const ProjectDetails = () => {
                     </AddNewButton>
                   </Top>
                   <Wrapper alignment={alignment}>
-                    <AddWork ProjectMembers={members}/>
+                    <AddWork ProjectMembers={members} ProjectId={id}/>
                     <WorkCards status="In Progress" />
                     <WorkCards status="In Progress" />
                     <WorkCards status="In Progress" />

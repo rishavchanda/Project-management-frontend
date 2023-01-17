@@ -1,24 +1,14 @@
 import React, { useEffect } from "react";
 import { Fragment, useState, useRef } from "react";
 import styled from "styled-components";
-import {
-  Close,
-  CloseRounded,
-  Delete,
-  ImportantDevices,
-  MoreHoriz,
-  TimelapseRounded,
-} from "@mui/icons-material";
-import LinearProgress, {
-  linearProgressClasses,
-} from "@mui/material/LinearProgress";
-import { useDrag, useDrop } from "react-dnd";
-import ITEM_TYPE from "../data/types";
-import { tagColors } from "../data/data";
-import { Link } from "react-router-dom";
+import { CloseRounded } from "@mui/icons-material";
 import { IconButton } from "@mui/material";
 import { Avatar } from "@mui/material";
 import { Modal } from "@mui/material";
+import { addWorks } from "../api";
+import CircularProgress from "@mui/material/CircularProgress";
+import { useDispatch } from "react-redux";
+import { openSnackbar } from "../redux/snackbarSlice";
 
 const Container = styled.div`
   padding: 12px 14px;
@@ -69,29 +59,6 @@ const Desc = styled.div`
   -webkit-line-clamp: 5; /* number of lines to show */
   line-clamp: 5;
   -webkit-box-orient: vertical;
-`;
-
-const Progress = styled.div`
-  position: relative;
-`;
-
-const Text = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 14px;
-  font-weight: 400;
-  color: ${({ theme }) => theme.soft2};
-  margin: 14px 0px 10px 0px;
-  line-height: 1.5;
-  overflow: hidden;
-`;
-
-const Span = styled.span`
-  font-size: 15px;
-  font-weight: 600;
-  color: ${({ theme }) => theme.soft2};
-  line-height: 1.5;
 `;
 
 const Task = styled.div`
@@ -275,13 +242,16 @@ const InviteButton = styled.button`
   }
 `;
 
-const AddWork = ({ ProjectMembers }) => {
+const AddWork = ({ ProjectMembers, ProjectId }) => {
+  const dispatch = useDispatch();
   //hooks for different steps of the work card
   const [step, setStep] = useState(0);
+  const [loading, setLoading] = useState(false);
   const [selectMember, setSelectMember] = useState(false);
   //the work card hook
   const [title, setTitle] = useState("");
   const [desc, setDesc] = useState("");
+  const [tags, setTags] = useState("");
   const [taskIndex, setTaskIndex] = useState(0);
 
   //tasks
@@ -298,6 +268,17 @@ const AddWork = ({ ProjectMembers }) => {
     data[index][event.target.name] = event.target.value;
     setTask(data);
   };
+
+  const goToAddTask = () => {
+    //check if all the fields are filled
+    if (!title || !desc) {
+      alert("Please fill all the fields");
+      return;
+    } else {
+      setStep(step + 1);
+    }
+  };
+
   const addTasks = () => {
     let newfield = { task: "", start_date: "", end_date: "", members: [] };
     setTask([...task, newfield]);
@@ -332,14 +313,8 @@ const AddWork = ({ ProjectMembers }) => {
     setTask(data);
   };
 
-
   //create new work card
   const createWorkCard = () => {
-    //check if all the fields are filled
-    if (!title || !desc || !task[0].task || !task[0].start_date) {
-      alert("Please fill all the fields");
-      return;
-    }
     //check if all the tasks are filled
     let check = task.find((item) => !item.task || !item.start_date);
     if (check) {
@@ -363,23 +338,52 @@ const AddWork = ({ ProjectMembers }) => {
         members,
       };
     });
-    
+
     let newWorkCard = {
       title,
       desc,
+      //array of tags seperated by comma
+      tags: tags.split(","),
       tasks: newTask,
     };
 
     console.log(newWorkCard);
-
-    //add the new work card to the project
-    // let data = [...ProjectMembers];
-    // data[0].work.push(newWorkCard);
-    // setProjectMembers(data);
-    // //close the modal
-    // setAddWork(false);
+    setLoading(true);
+    addWorks(ProjectId, newWorkCard)
+      .then((res) => {
+        setLoading(false);
+        emptyForm();
+        dispatch(
+          openSnackbar({
+            message: "Created a work card Successfully",
+            severity: "success",
+          })
+        );
+      })
+      .catch((err) => {
+        console.log(err);
+        openSnackbar({
+          message: err.message,
+          severity: "error",
+        });
+        setLoading(false);
+      });
   };
-    
+
+  const emptyForm = () => {
+    setTitle("");
+    setDesc("");
+    setTags("");
+    setTask([
+      {
+        task: "",
+        start_date: "",
+        end_date: "",
+        members: [],
+      },
+    ]);
+    setStep(0);
+  };
 
   return (
     <Container className={"item"}>
@@ -400,16 +404,25 @@ const AddWork = ({ ProjectMembers }) => {
             <TextArea
               placeholder="What is the new work about?"
               name="desc"
-              rows={5}
+              rows={4}
               value={desc}
               onChange={(e) => setDesc(e.target.value)}
+            />
+          </OutlinedBox>
+          <OutlinedBox>
+            <TextArea
+              placeholder="Tags seperated by comma"
+              name="tags"
+              rows={2}
+              value={tags}
+              onChange={(e) => setTags(e.target.value)}
             />
           </OutlinedBox>
           <OutlinedBox
             button
             activeButton
             style={{ marginTop: "14px" }}
-            onClick={() => setStep(step + 1)}
+            onClick={() => goToAddTask()}
           >
             Next
           </OutlinedBox>
@@ -567,21 +580,11 @@ const AddWork = ({ ProjectMembers }) => {
               onClick={() => createWorkCard()}
               // onClick={() => setStep(step + 1)}
             >
-              Create
+              {loading ? <CircularProgress size={20} /> : "Create"}
             </OutlinedBox>
           </FlexDisplay>
         </>
       )}
-
-      {/* <Bottom>
-        <Time>
-          <TimelapseRounded sx={{ fontSize: "22px" }} /> Updated 2 day ago
-        </Time>
-        <MemberGroup>
-          <Avatar src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTUB8kqGZ74kvQczb_fL00a6LecB331zRp5SQ&usqp=CAU" />
-          <Avatar src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTUB8kqGZ74kvQczb_fL00a6LecB331zRp5SQ&usqp=CAU" />
-        </MemberGroup>
-      </Bottom> */}
     </Container>
   );
 };

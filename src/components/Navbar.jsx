@@ -13,7 +13,7 @@ import { useDispatch } from "react-redux";
 import Avatar from "@mui/material/Avatar";
 import AccountDialog from "./AccountDialog";
 import NotificationDialog from "./NotificationDialog";
-import { getUsers } from "../api/index";
+import { getUsers,notifications } from "../api/index";
 import { openSnackbar } from "../redux/snackbarSlice";
 import { logout } from "../redux/userSlice";
 
@@ -106,6 +106,8 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user);
   const [users, setUsers] = useState([]);
+  
+  const [notification, setNotification] = useState([]);
   useEffect(() => {
     getUsers().then((res) => {
       setUsers(res.data);
@@ -116,6 +118,23 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
       }
     });
   }, [dispatch]);
+
+  
+  const getNotifications = async () => {
+    try {
+      notifications().then((res) => {
+        setNotification(res.data);
+        console.log(notification);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getNotifications();
+  });
+
   useEffect(() => {
     if (!currentUser && !SignUpOpen) {
       setSignInOpen(true);
@@ -171,7 +190,7 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
             {currentUser ? (
               <>
                 <IcoButton aria-describedby={id} onClick={notificationClick}>
-                  <Badge badgeContent={4} color="primary">
+                  <Badge badgeContent={notification.length} color="primary">
                     <NotificationsRounded />
                   </Badge>
                 </IcoButton>
@@ -226,6 +245,7 @@ const Navbar = ({ menuOpen, setMenuOpen }) => {
           id={id2}
           handleClose={notificationClose}
           currentUser={currentUser}
+          notification = {notification}
         />
       )}
     </>
