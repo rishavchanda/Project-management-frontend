@@ -37,6 +37,7 @@ export const getProjects = async () => await API.get(`/users/projects`, { withCr
 export const getProjectDetails = async (id) => await API.get(`/project/${id}`, { withCredentials: true });
 export const inviteProjectMembers = async (id, members) => await API.post(`/project/invite/${id}`, members, { withCredentials: true });
 export const addWorks = async (id, works) => await API.post(`/project/works/${id}`, works, { withCredentials: true });
+export const getWorks = async (id) => await API.get(`/project/works/${id}`, { withCredentials: true });
 
 
 //teams api

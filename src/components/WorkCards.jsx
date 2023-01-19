@@ -9,11 +9,14 @@ import {
 import LinearProgress, {
   linearProgressClasses,
 } from "@mui/material/LinearProgress";
+import { format } from "timeago.js";
 import { useDrag, useDrop } from "react-dnd";
 import ITEM_TYPE from "../data/types";
 import { tagColors } from "../data/data";
 import { Link } from "react-router-dom";
 import { color } from "@mui/system";
+import { Avatar } from "@mui/material";
+import WorkDetails from "./WorkDetails";
 
 const Container = styled.div`
   padding: 14px 14px;
@@ -83,6 +86,23 @@ const Text = styled.div`
   overflow: hidden;
 `;
 
+const Tags = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  gap: 4px;
+  margin-top: 8px;
+`;
+
+const Tag = styled.div`
+  padding: 4px 10px;
+  border-radius: 8px;
+  color: ${({ tagColor, theme }) => tagColor + theme.lightAdd};
+  background-color: ${({ tagColor, theme }) => tagColor + "10"};
+  font-size: 10px;
+  font-weight: 500;
+`;
+
 const Span = styled.span`
   font-size: 15px;
   font-weight: 600;
@@ -112,49 +132,106 @@ const AvatarGroup = styled.div`
   margin-right: 12px;
 `;
 
-const Avatar = styled.img`
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  margin-right: -12px;
-  border: 3px solid ${({ theme }) => theme.bgLighter};
-`;
-
-const Card = ({ tagColor, item, index, status }) => {
+const Card = ({ status, work }) => {
   const [color, setColor] = useState("primary");
+  const [task, setTask] = useState(work.tasks);
+  const [tag, setTag] = useState(work.tags);
+  const [completed, setCompleted] = useState(0);
+  const [progress, setProgress] = useState(0);
+  const [members, setMembers] = useState([]);
+  const [openWork, setOpenWork] = useState(false);
+
   useEffect(() => {
     if (status === "Completed") {
       setColor("success");
     }
   }, [status]);
+
+  //check the no of tasks completed in the work and set the progress
+  useEffect(() => {
+    let count = 0;
+    let Members = [];
+    task.forEach((item) => {
+      if (item.status === "Completed") {
+        count++;
+      }
+      console.log(item);
+      if (item.members.length > 0) {
+        item.members.forEach((items) => {
+          Members.push(items);
+
+          console.log(items);
+        });
+      }
+    });
+    setCompleted(count);
+    setProgress(completed);
+    setMembers(Members);
+  }, [task]);
+
+  //get the members of the work from all the tasks and add it in members array withb the image and name
+
   return (
     <Container className={"item"}>
       <Top>
-        <Title>Works</Title>
+        <Title>{work.title}</Title>
         <MoreHoriz style={{ flex: "1" }} />
       </Top>
-      <Desc>
-        Some work details task Some work details taskSome work details task
-      </Desc>
+      <Desc>{work.desc}</Desc>
+      <Tags>
+        {tag.map((tag) => (
+          <Tag
+            tagColor={tagColors[Math.floor(Math.random() * tagColors.length)]}
+          >
+            {tag}
+          </Tag>
+        ))}
+      </Tags>
       <Progress>
         <Text>
-          Progress
-          <Span>2/10</Span>
+          Tasks Completed
+          <Span>
+            {completed} / {task.length}
+          </Span>
         </Text>
         <LinearProgress
           sx={{ borderRadius: "10px", height: 5 }}
           variant="determinate"
-          value={20}
+          value={completed}
           color={color}
         />
       </Progress>
       <Bottom>
         <Time>
-          <TimelapseRounded sx={{ fontSize: "22px" }} /> Updated 2 day ago
+          <TimelapseRounded sx={{ fontSize: "22px" }} /> Updated{" "}
+          {format(work.updatedAt)}
         </Time>
         <AvatarGroup>
-          <Avatar src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTUB8kqGZ74kvQczb_fL00a6LecB331zRp5SQ&usqp=CAU" />
-          <Avatar src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTUB8kqGZ74kvQczb_fL00a6LecB331zRp5SQ&usqp=CAU" />
+          {members.slice(0, 2).map((member) => (
+            <Avatar
+              sx={{
+                marginRight: "-13px",
+                width: "30px",
+                height: "30px",
+                fontSize: "16px",
+              }}
+              src={member.img}
+            >
+              {member.name.charAt(0)}
+            </Avatar>
+          ))}
+          {members.length > 2 && (
+            <Avatar
+              sx={{
+                marginRight: "-13px",
+                width: "30px",
+                height: "30px",
+                fontSize: "12px",
+              }}
+            >
+              +{members.length - 2}
+            </Avatar>
+          )}
         </AvatarGroup>
       </Bottom>
     </Container>

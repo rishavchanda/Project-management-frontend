@@ -11,6 +11,9 @@ export const darkTheme = {
     soft2:"#8C979A",
     card: "#1C1E27",
     lightAdd:"99",
+    yellow: "#fccf03",
+    green: "#03fc45",
+    pink: "#fc036b"
 
     /*Colors
 Swatch 1

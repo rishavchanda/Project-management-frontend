@@ -242,7 +242,7 @@ const InviteButton = styled.button`
   }
 `;
 
-const AddWork = ({ ProjectMembers, ProjectId }) => {
+const AddWork = ({ ProjectMembers, ProjectId, setCreated }) => {
   const dispatch = useDispatch();
   //hooks for different steps of the work card
   const [step, setStep] = useState(0);
@@ -353,6 +353,7 @@ const AddWork = ({ ProjectMembers, ProjectId }) => {
       .then((res) => {
         setLoading(false);
         emptyForm();
+        setCreated(true);
         dispatch(
           openSnackbar({
             message: "Created a work card Successfully",
@@ -362,10 +363,12 @@ const AddWork = ({ ProjectMembers, ProjectId }) => {
       })
       .catch((err) => {
         console.log(err);
-        openSnackbar({
-          message: err.message,
-          severity: "error",
-        });
+        dispatch(
+          openSnackbar({
+            message: err.message,
+            severity: "error",
+          })
+        );
         setLoading(false);
       });
   };

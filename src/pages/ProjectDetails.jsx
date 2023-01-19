@@ -20,11 +20,12 @@ import ToolsCard from "../components/ToolsCard";
 import IdeaCard from "../components/IdeaCard";
 import axios from "axios";
 import Avatar from "@mui/material/Avatar";
-import { openSnackbar} from "../redux/snackbarSlice";
+import { openSnackbar } from "../redux/snackbarSlice";
 import { useDispatch } from "react-redux";
-import { getProjectDetails } from "../api/index";
+import { getProjectDetails, getWorks } from "../api/index";
 import InviteMembers from "../components/InviteMembers";
 import AddWork from "../components/AddWork";
+import WorkDetails from "../components/WorkDetails";
 
 const Container = styled.div`
   padding: 14px 14px;
@@ -194,7 +195,7 @@ const ToggleButton = styled.div`
 const ItemWrapper = styled.div`
   width: 100%;
   height: 100%;
-  
+
   @media screen and (max-width: 480px) {
     width: 94%;
   }
@@ -318,6 +319,12 @@ const ProjectDetails = () => {
   const [members, setMembers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [invitePopup, setInvitePopup] = useState(false);
+  const [works, setWorks] = useState([]);
+  const [created, setCreated] = useState(false);
+  const [currentWork, setCurrentWork] = useState({});
+
+  const [openWork, setOpenWork] = useState(false);
+
   const dispatch = useDispatch();
   const getproject = async () => {
     getProjectDetails(id)
@@ -327,7 +334,8 @@ const ProjectDetails = () => {
       })
       .then(() => {
         setLoading(false);
-      }).catch((err) => {
+      })
+      .catch((err) => {
         dispatch(
           openSnackbar({
             message: err.response.data.message,
@@ -336,16 +344,44 @@ const ProjectDetails = () => {
         );
       });
   };
+
+  const getProjectWorks = async (id) => {
+    getWorks(id)
+      .then((res) => {
+        setWorks(res.data);
+        console.log(res.data);
+      })
+      .catch((err) => {
+        dispatch(
+          openSnackbar({
+            message: err.response.data.message,
+            severity: "error",
+          })
+        );
+      });
+  };
+
+  const openWorkDetails = (work) => {
+    setCurrentWork(work);
+    setOpenWork(true);
+  };
+
   useEffect(() => {
     window.scrollTo(0, 0);
     getproject();
-  }, [id]);
+  }, []);
+
+  useEffect(() => {
+    getProjectWorks(id);
+  }, [created]);
+  // check user role and access
 
   console.log(item);
   const [alignment, setAlignment] = React.useState(true);
 
   return (
     <Container>
+      {openWork && <WorkDetails setOpenWork={setOpenWork} work={currentWork} />}
       {loading ? (
         <>Loading</>
       ) : (
@@ -367,17 +403,26 @@ const ProjectDetails = () => {
             <Members>
               <AvatarGroup>
                 {members.map((member) => (
-              <Avatar sx={{marginRight: '-12px', width: '38px', height: '38px'}} src={member.img} />
-            ))}
+                  <Avatar
+                    sx={{ marginRight: "-12px", width: "38px", height: "38px" }}
+                    src={member.img}
+                  >
+                    {member.name.charAt(0)}
+                  </Avatar>
+                ))}
               </AvatarGroup>
-              <InviteButton onClick={ () => setInvitePopup(true)}>
+              <InviteButton onClick={() => setInvitePopup(true)}>
                 <PersonAdd sx={{ fontSize: "12px" }} />
                 Invite
               </InviteButton>
             </Members>
             <Hr />
             {invitePopup && (
-              <InviteMembers setInvitePopup={setInvitePopup} id={id} teamInvite={false}/>
+              <InviteMembers
+                setInvitePopup={setInvitePopup}
+                id={id}
+                teamInvite={false}
+              />
             )}
           </Header>
           <Body>
@@ -411,10 +456,20 @@ const ProjectDetails = () => {
                     </AddNewButton>
                   </Top>
                   <Wrapper alignment={alignment}>
-                    <AddWork ProjectMembers={members} ProjectId={id}/>
-                    <WorkCards status="In Progress" />
-                    <WorkCards status="In Progress" />
-                    <WorkCards status="In Progress" />
+                    <AddWork
+                      ProjectMembers={members}
+                      ProjectId={id}
+                      setCreated={setCreated}
+                    />
+
+                    {works.map((item) => (
+                      <div onClick = {()=> openWorkDetails(item)}>
+                        <WorkCards
+                          status="In Progress"
+                          work={item}
+                        />
+                      </div>
+                    ))}
                   </Wrapper>
                 </ItemWrapper>
                 <ItemWrapper>
@@ -427,9 +482,7 @@ const ProjectDetails = () => {
                       <Span>(5)</Span>
                     </Text>
                   </Top>
-                  <Wrapper alignment={alignment}>
-                    <WorkCards status="Completed" />
-                  </Wrapper>
+                  <Wrapper alignment={alignment}></Wrapper>
                 </ItemWrapper>
               </Column>
             </Work>
@@ -443,8 +496,8 @@ const ProjectDetails = () => {
                   </IcoBtn>
                 </SubCardTop>
                 {members.map((member) => (
-              <MemberCard member={member} />
-            ))}
+                  <MemberCard member={member} />
+                ))}
               </SubCards>
               <SubCards>
                 <SubCardTop>
@@ -455,8 +508,8 @@ const ProjectDetails = () => {
                 </SubCardTop>
                 <Tools>
                   {item.tools.map((tool) => (
-                <ToolsCard tool={tool} />
-              ))}
+                    <ToolsCard tool={tool} />
+                  ))}
                 </Tools>
               </SubCards>
               <SubCards>
