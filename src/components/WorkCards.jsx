@@ -158,9 +158,11 @@ const Card = ({ status, work }) => {
       console.log(item);
       if (item.members.length > 0) {
         item.members.forEach((items) => {
-          Members.push(items);
-
-          console.log(items);
+          let isPresent = Members.some((member) => member._id === items._id);
+          if (!isPresent)
+          {
+            Members.push(items);
+          }
         });
       }
     });
@@ -197,7 +199,8 @@ const Card = ({ status, work }) => {
         <LinearProgress
           sx={{ borderRadius: "10px", height: 5 }}
           variant="determinate"
-          value={completed}
+          value={(completed / task.length) * 100}
+          
           color={color}
         />
       </Progress>

@@ -22,10 +22,11 @@ import axios from "axios";
 import Avatar from "@mui/material/Avatar";
 import { openSnackbar } from "../redux/snackbarSlice";
 import { useDispatch } from "react-redux";
-import { getProjectDetails, getWorks } from "../api/index";
+import { userTasks, userWorks } from "../api/index";
 import InviteMembers from "../components/InviteMembers";
 import AddWork from "../components/AddWork";
 import WorkDetails from "../components/WorkDetails";
+import TaskCard from "../components/TaskCard";
 
 const Container = styled.div`
   padding: 14px 14px;
@@ -39,7 +40,7 @@ const Header = styled.div``;
 const Column = styled.div`
   display: flex;
   ${(props) =>
-    props.alignment ? "flex-direction: row;" : "flex-direction: column;"}
+    props.alignment ? "flex-direction: column;" : "flex-direction: row;"}
   margin: 12px 0px;
   @media screen and (max-width: 480px) {
     margin: 6px 0px;
@@ -167,22 +168,22 @@ const ToggleButton = styled.div`
   color: ${({ theme }) => theme.soft2};
   border-radius: 5px;
   ${(props) => {
-    if (props.button == "row") {
+    if (props.button == "col") {
       return `border-radius: 5px 0px 0px 5px; border: 2px solid ${props.theme.soft2};`;
     }
-    if (props.button == "col") {
+    if (props.button == "row") {
       return `border-radius: 0px 5px 5px 0px; border: 2px solid ${props.theme.soft2};`;
     }
   }}
   ${(props) => {
-    if (props.alignment && props.button == "row") {
+    if (props.alignment && props.button == "col") {
       return `border-radius: 5px 0px 0px 5px; border: 2px solid ${
         props.theme.primary
       }; color: ${props.theme.primary}; background-color: ${
         props.theme.primary + "11"
       };`;
     }
-    if (!props.alignment && props.button == "col") {
+    if (!props.alignment && props.button == "row") {
       return `border-radius: 0px 5px 5px 0px; border: 2px solid ${
         props.theme.primary
       }; color: ${props.theme.primary}; background-color: ${
@@ -259,7 +260,7 @@ const IcoBtn = styled(IconButton)`
 `;
 
 const Extra = styled.div`
-  flex: 1;
+  flex: 1.2;
 `;
 
 const SubCards = styled.div`
@@ -278,7 +279,7 @@ const SubCardTop = styled.div`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: 3px 4px;
+  padding: 3px 14px;
   color: ${({ theme }) => theme.text};
 `;
 
@@ -313,6 +314,89 @@ const Ideas = styled.div`
   padding: 8px 8px;
 `;
 
+//tasks
+
+const Table = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 6px 10px;
+`;
+
+const TableHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 10px;
+  gap: 8px;
+  border-radius: 8px 8px 0px 0px;
+  border: 1.8px solid ${({ theme }) => theme.soft + "99"};
+  background-color: ${({ theme }) => theme.card};
+  color: ${({ theme }) => theme.text};
+  cursor: pointer;
+  background-color: ${({ theme }) => theme.bgDark};
+`;
+
+const No = styled.div`
+  width: 4%;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  font-weight: 500;
+  color: ${({ theme }) => theme.soft2};
+  display: -webkit-box;
+  -webkit-line-clamp: 5; /* number of lines to show */
+  line-clamp: 5;
+  -webkit-box-orient: vertical;
+
+  ${({ completed, theme }) =>
+    completed === "Completed" &&
+    `
+    text-decoration: line-through;
+    `}
+`;
+
+const Task = styled.div`
+  width: 50%;
+  font-size: 12px;
+  font-weight: 500;
+  color: ${({ theme }) => theme.soft2};
+  display: -webkit-box;
+  -webkit-line-clamp: 5; /* number of lines to show */
+  line-clamp: 5;
+  -webkit-box-orient: vertical;
+  padding: 6px;
+
+  ${({ completed, theme }) =>
+    completed === "Completed" &&
+    `
+    text-decoration: line-through;
+    `}
+`;
+
+const Date = styled.div`
+  font-size: 12px;
+  font-weight: 500;
+  text-align: center;
+  text-overflow: ellipsis;
+  width: 14%;
+  color: ${({ theme }) => theme.soft2};
+  ${({ enddate, theme }) =>
+    enddate &&
+    `
+    color: ${theme.pink};
+    `}
+  display: -webkit-box;
+  -webkit-line-clamp: 5; /* number of lines to show */
+  line-clamp: 5;
+  -webkit-box-orient: vertical;
+
+  ${({ completed, theme }) =>
+    completed === "Completed" &&
+    `
+  text-decoration: line-through;
+  `}
+`;
+
 const ProjectDetails = () => {
   const { id } = useParams();
   const [item, setItems] = useState([]);
@@ -320,44 +404,35 @@ const ProjectDetails = () => {
   const [loading, setLoading] = useState(true);
   const [invitePopup, setInvitePopup] = useState(false);
   const [works, setWorks] = useState([]);
+  const [tasks, setTasks] = useState([]);
   const [created, setCreated] = useState(false);
   const [currentWork, setCurrentWork] = useState({});
 
   const [openWork, setOpenWork] = useState(false);
 
   const dispatch = useDispatch();
-  const getproject = async () => {
-    getProjectDetails(id)
-      .then((res) => {
-        setItems(res.data);
-        setMembers(res.data.members);
-      })
-      .then(() => {
-        setLoading(false);
-      })
-      .catch((err) => {
-        dispatch(
-          openSnackbar({
-            message: err.response.data.message,
-            severity: "error",
-          })
-        );
-      });
-  };
-
-  const getProjectWorks = async (id) => {
-    getWorks(id)
+  const getWorks = async () => {
+    userWorks()
       .then((res) => {
         setWorks(res.data);
+        setLoading(false);
         console.log(res.data);
       })
       .catch((err) => {
-        dispatch(
-          openSnackbar({
-            message: err.response.data.message,
-            severity: "error",
-          })
-        );
+        console.log(err);
+        setLoading(false);
+      });
+  };
+
+  const getTasks = async () => {
+    userTasks()
+      .then((res) => {
+        setTasks(res.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoading(false);
       });
   };
 
@@ -368,13 +443,9 @@ const ProjectDetails = () => {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    getproject();
+    getWorks();
+    getTasks();
   }, []);
-
-  useEffect(() => {
-    getProjectWorks(id);
-  }, [created]);
-  // check user role and access
 
   console.log(item);
   const [alignment, setAlignment] = React.useState(true);
@@ -386,61 +457,23 @@ const ProjectDetails = () => {
         <>Loading</>
       ) : (
         <>
-          <Header>
-            <Title>{item.title}</Title>
-            <Desc>{item.desc}</Desc>
-            <Tags>
-              {item.tags.map((tag) => (
-                <Tag
-                  tagColor={
-                    tagColors[Math.floor(Math.random() * tagColors.length)]
-                  }
-                >
-                  {tag}
-                </Tag>
-              ))}
-            </Tags>
-            <Members>
-              <AvatarGroup>
-                {members.map((member) => (
-                  <Avatar
-                    sx={{ marginRight: "-12px", width: "38px", height: "38px" }}
-                    src={member.id.img}
-                  >
-                    {member.id.name.charAt(0)}
-                  </Avatar>
-                ))}
-              </AvatarGroup>
-              <InviteButton onClick={() => setInvitePopup(true)}>
-                <PersonAdd sx={{ fontSize: "12px" }} />
-                Invite
-              </InviteButton>
-            </Members>
-            <Hr />
-            {invitePopup && (
-              <InviteMembers
-                setInvitePopup={setInvitePopup}
-                id={id}
-                teamInvite={false}
-              />
-            )}
-          </Header>
+          <Header></Header>
           <Body>
             <Work>
               <Allignment>
                 <ToggleButton
                   alignment={alignment}
-                  button={"row"}
+                  button={"col"}
                   onClick={() => setAlignment(true)}
                 >
-                  <AlignVerticalTop sx={{ fontSize: "18px" }} />
+                  <AlignHorizontalLeft sx={{ fontSize: "18px" }} />
                 </ToggleButton>
                 <ToggleButton
                   alignment={alignment}
-                  button={"col"}
+                  button={"row"}
                   onClick={() => setAlignment(false)}
                 >
-                  <AlignHorizontalLeft sx={{ fontSize: "18px" }} />
+                  <AlignVerticalTop sx={{ fontSize: "18px" }} />
                 </ToggleButton>
               </Allignment>
               <Column alignment={alignment}>
@@ -449,27 +482,24 @@ const ProjectDetails = () => {
                     <Text>
                       <DonutLarge sx={{ color: "#1976D2", fontSize: "20px" }} />
                       In Progress
-                      <Span>(5)</Span>
+                      <Span>
+                        ({" "}
+                        {
+                          works.filter((item) => item.status == "Working")
+                            .length
+                        }{" "}
+                        )
+                      </Span>
                     </Text>
-                    <AddNewButton>
-                      <Add />
-                    </AddNewButton>
                   </Top>
                   <Wrapper alignment={alignment}>
-                    <AddWork
-                      ProjectMembers={members}
-                      ProjectId={id}
-                      setCreated={setCreated}
-                    />
-
-                    {works.map((item) => (
-                      <div onClick = {()=> openWorkDetails(item)}>
-                        <WorkCards
-                          status="In Progress"
-                          work={item}
-                        />
-                      </div>
-                    ))}
+                    {works
+                      .filter((item) => item.status == "Working")
+                      .map((item) => (
+                        <div onClick={() => openWorkDetails(item)}>
+                          <WorkCards status="In Progress" work={item} />
+                        </div>
+                      ))}
                   </Wrapper>
                 </ItemWrapper>
                 <ItemWrapper>
@@ -479,52 +509,71 @@ const ProjectDetails = () => {
                         sx={{ color: "#67BC6D", fontSize: "20px" }}
                       />
                       Completed
-                      <Span>(5)</Span>
+                      <Span>
+                        ({" "}
+                        {
+                          works.filter((item) => item.status == "Completed")
+                            .length
+                        }{" "}
+                        )
+                      </Span>
                     </Text>
                   </Top>
-                  <Wrapper alignment={alignment}></Wrapper>
+                  <Wrapper alignment={alignment}>
+                    {works
+                      .filter((item) => item.status == "Completed")
+                      .map((item) => (
+                        <div onClick={() => openWorkDetails(item)}>
+                          <WorkCards status="In Progress" work={item} />
+                        </div>
+                      ))}
+                  </Wrapper>
                 </ItemWrapper>
               </Column>
             </Work>
-            <HrHor />
             <Extra>
-              <SubCards>
-                <SubCardTop>
-                  <SubCardsTitle>Members</SubCardsTitle>
-                  <IcoBtn>
-                    <Edit sx={{ fontSize: "16px" }} />
-                  </IcoBtn>
-                </SubCardTop>
-                {members.map((member) => (
-                  <MemberCard member={member} />
-                ))}
-              </SubCards>
-              <SubCards>
-                <SubCardTop>
-                  <SubCardsTitle>Tools</SubCardsTitle>
-                  <IcoBtn>
-                    <Add sx={{ fontSize: "20px" }} />
-                  </IcoBtn>
-                </SubCardTop>
-                <Tools>
-                  {item.tools.map((tool) => (
-                    <ToolsCard tool={tool} />
+              <SubCardTop>
+                <SubCardsTitle>Your Tasks</SubCardsTitle>
+              </SubCardTop>
+
+              <Table>
+                <TableHeader>
+                  <No style={{ fontSize: "14px", fontWeight: "800" }}>No</No>
+                  <Task
+                    style={{
+                      width: "51%",
+                      fontSize: "14px",
+                      fontWeight: "800",
+                    }}
+                  >
+                    Tasks
+                  </Task>
+                  <Date style={{ fontSize: "14px", fontWeight: "800" }}>
+                    Start Date
+                  </Date>
+                  <Date style={{ fontSize: "14px", fontWeight: "800" }}>
+                    Deadline
+                  </Date>
+                  <Date style={{ fontSize: "14px", fontWeight: "800" }}>
+                    Status
+                  </Date>
+                  <Date
+                    style={{
+                      textAlign: "center",
+                      width: "20%",
+                      fontSize: "14px",
+                      fontWeight: "800",
+                    }}
+                  >
+                    Members
+                  </Date>
+                </TableHeader>
+                {tasks
+                  .filter((item) => item.status == "Working")
+                  .map((item, index) => (
+                    <TaskCard item={item} index={index} members={members} />
                   ))}
-                </Tools>
-              </SubCards>
-              <SubCards>
-                <SubCardTop>
-                  <SubCardsTitle>Idea List</SubCardsTitle>
-                  <IcoBtn>
-                    <Add sx={{ fontSize: "20px" }} />
-                  </IcoBtn>
-                </SubCardTop>
-                <Ideas>
-                  {/*ideas.map((i,id) => (
-                <IdeaCard idea={i} no={id} key={id}/>
-              ))*/}
-                </Ideas>
-              </SubCards>
+              </Table>
             </Extra>
           </Body>
         </>

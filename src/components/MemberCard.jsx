@@ -58,10 +58,10 @@ const MemberCard = ({ member }) => {
   return (
     <Container>
       <Wrapper>
-        <Avatar sx={{width: '34px', height: '34px'}} src={member.img} >{member.name.charAt(0)}</Avatar>
+        <Avatar sx={{width: '34px', height: '34px'}} src={member.id.img} >{member.id.name.charAt(0)}</Avatar>
         <Details>
-          <Name>{member.name}</Name>
-          <EmailId>{member.email}</EmailId>
+          <Name>{member.id.name}</Name>
+          <EmailId>{member.id.email}</EmailId>
         </Details>
         <Role
           tagColor={tagColors[Math.floor(Math.random() * tagColors.length)]}

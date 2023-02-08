@@ -305,10 +305,10 @@ const AddWork = ({ ProjectMembers, ProjectId, setCreated }) => {
   const AddToMember = (member, index) => {
     //if member exist dont add
 
-    if (task[index].members.find((item) => item.id === member.id)) return;
+    if (task[index].members.find((item) => item.id === member.id._id)) return;
 
     let data = [...task];
-    data[index].members.push({ id: member.id, img: member.img });
+    data[index].members.push({ id: member.id._id, img: member.id.img });
 
     setTask(data);
   };
@@ -535,17 +535,17 @@ const AddWork = ({ ProjectMembers, ProjectId, setCreated }) => {
                       <UserData>
                         <Avatar
                           sx={{ width: "34px", height: "34px" }}
-                          src={user.img}
+                          src={user.id.img}
                         >
-                          {user.name.charAt(0)}
+                          {user.id.name.charAt(0)}
                         </Avatar>
                         <Details>
-                          <Name>{user.name}</Name>
-                          <EmailId>{user.email}</EmailId>
+                          <Name>{user.id.name}</Name>
+                          <EmailId>{user.id.email}</EmailId>
                         </Details>
                       </UserData>
                       {!task[taskIndex].members.find(
-                        (member) => member.id === user.id
+                        (member) => member.id === user.id._id
                       ) && (
                         <InviteButton
                           onClick={() => AddToMember(user, taskIndex)}

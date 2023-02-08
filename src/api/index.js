@@ -30,6 +30,8 @@ export const getUsers = async () => await API.get('/users/find', {
     });
 export const searchUsers = async (search) => await API.get(`users/search/${search}`, { withCredentials: true });
 export const notifications = async () => await API.get('/users/notifications', { withCredentials: true });
+export const userWorks = async () => await API.get('/users/works', { withCredentials: true });
+export const userTasks = async () => await API.get('/users/tasks', { withCredentials: true });
 
 //projects api
 export const createProject = async (project) => await API.post('project/', project, { withCredentials: true });

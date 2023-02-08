@@ -99,6 +99,7 @@ const Menu = ({ darkMode, setDarkMode, setMenuOpen, setNewTeam }) => {
   const {currentUser} = useSelector(state => state.user);
 
   const getteams = async () => {
+    console.log(team);
     getUsers()
       .then((res) => {
         setTeams(res.data.teams);
@@ -113,7 +114,7 @@ const Menu = ({ darkMode, setDarkMode, setMenuOpen, setNewTeam }) => {
   useEffect(() => {
     getteams();
   }, [currentUser]);
-  console.log(team);
+
   return (
     <Container setMenuOpen={setMenuOpen}>
       <Link to="/" style={{ textDecoration: "none", color: "inherit" }}>
@@ -139,7 +140,7 @@ const Menu = ({ darkMode, setDarkMode, setMenuOpen, setNewTeam }) => {
           </Item>
         </Link>
         <Link
-          to="your-works"
+          to="works"
           style={{ textDecoration: "none", color: "inherit" }}
         >
           <Item>
@@ -153,7 +154,7 @@ const Menu = ({ darkMode, setDarkMode, setMenuOpen, setNewTeam }) => {
         </Title>
         {team.map((team,i) => (
           <Link
-            to = {`/teams/${team.id}`}
+            to = {`/teams/${team._id}`}
             style={{ textDecoration: "none", color: "inherit" }}
           >
             <Item>

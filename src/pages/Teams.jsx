@@ -249,7 +249,7 @@ const Teams = () => {
   const getTeamDetails = async () => {
     getTeams(id)
       .then((res) => {
-        setItems(res.data.Team);
+        setItems(res.data);
         setProjects(res.data.projects);
       })
       .then(() => {
@@ -285,11 +285,11 @@ const Teams = () => {
               <AvatarGroup>
                 {item.members.map((member) => (
                   <Avatar
-                    alt={member.name}
+                    alt={member.id._id}
                     sx={{ width: "38px", height: "38px", marginRight: "-12px" }}
-                    src={member.img}
+                    src={member.id.img}
                   >
-                    {member.name.charAt(0)}
+                    {member.id.name.charAt(0)}
                   </Avatar>
                 ))}
               </AvatarGroup>
