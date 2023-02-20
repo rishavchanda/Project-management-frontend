@@ -42,6 +42,8 @@ const Column = styled.div`
   ${(props) =>
     props.alignment ? "flex-direction: column;" : "flex-direction: row;"}
   margin: 12px 0px;
+  flex-wrap: wrap;
+  align-items: stretch;
   @media screen and (max-width: 480px) {
     margin: 6px 0px;
     flex-direction: column;

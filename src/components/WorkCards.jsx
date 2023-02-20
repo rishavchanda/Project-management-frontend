@@ -3,8 +3,9 @@ import { Fragment, useState, useRef } from "react";
 import styled from "styled-components";
 import {
   ImportantDevices,
-  MoreHoriz,
+  MoreVert,
   TimelapseRounded,
+  StarsRounded
 } from "@mui/icons-material";
 import LinearProgress, {
   linearProgressClasses,
@@ -15,11 +16,11 @@ import ITEM_TYPE from "../data/types";
 import { tagColors } from "../data/data";
 import { Link } from "react-router-dom";
 import { color } from "@mui/system";
-import { Avatar } from "@mui/material";
+import { Avatar, IconButton } from "@mui/material";
 import WorkDetails from "./WorkDetails";
 
 const Container = styled.div`
-  padding: 14px 14px;
+  padding: 14px;
   text-align: left;
   margin: 2px 0px;
   font-size: 16px;
@@ -78,7 +79,7 @@ const Text = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 400;
   color: ${({ theme }) => theme.soft2};
   margin: 14px 0px 10px 0px;
@@ -104,7 +105,7 @@ const Tag = styled.div`
 `;
 
 const Span = styled.span`
-  font-size: 15px;
+  font-size: 12px;
   font-weight: 600;
   color: ${({ theme }) => theme.soft2};
   line-height: 1.5;
@@ -130,6 +131,9 @@ const AvatarGroup = styled.div`
   display: flex;
   align-items: center;
   margin-right: 12px;
+`;
+const IcoBtn = styled(IconButton)`
+  color: ${({ theme }) => theme.textSoft} !important;
 `;
 
 const Card = ({ status, work }) => {
@@ -159,8 +163,7 @@ const Card = ({ status, work }) => {
       if (item.members.length > 0) {
         item.members.forEach((items) => {
           let isPresent = Members.some((member) => member._id === items._id);
-          if (!isPresent)
-          {
+          if (!isPresent) {
             Members.push(items);
           }
         });
@@ -177,7 +180,11 @@ const Card = ({ status, work }) => {
     <Container className={"item"}>
       <Top>
         <Title>{work.title}</Title>
-        <MoreHoriz style={{ flex: "1" }} />
+        {work.priority === "Low" &&
+          <StarsRounded sx={{ 'font-size': '18px' }} style={{ 'color': '#E67E22' }} />}
+        <IcoBtn>
+          <MoreVert style={{ flex: "1", fontSize: '20px' }} />
+        </IcoBtn>
       </Top>
       <Desc>{work.desc}</Desc>
       <Tags>
@@ -197,10 +204,9 @@ const Card = ({ status, work }) => {
           </Span>
         </Text>
         <LinearProgress
-          sx={{ borderRadius: "10px", height: 5 }}
+          sx={{ borderRadius: "10px", height: 3 }}
           variant="determinate"
           value={(completed / task.length) * 100}
-          
           color={color}
         />
       </Progress>
@@ -214,8 +220,8 @@ const Card = ({ status, work }) => {
             <Avatar
               sx={{
                 marginRight: "-13px",
-                width: "30px",
-                height: "30px",
+                width: "26px",
+                height: "26px",
                 fontSize: "16px",
               }}
               src={member.img}
@@ -227,8 +233,8 @@ const Card = ({ status, work }) => {
             <Avatar
               sx={{
                 marginRight: "-13px",
-                width: "30px",
-                height: "30px",
+                width: "26px",
+                height: "26px",
                 fontSize: "12px",
               }}
             >
