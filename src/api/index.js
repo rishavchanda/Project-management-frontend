@@ -1,7 +1,8 @@
 import axios from 'axios';
 //https://vexa-server.herokuapp.com/api
 //http://localhost:8800/api/
-const API = axios.create({ baseURL: 'http://localhost:8700/api/' });
+//https://dull-blue-dolphin-tutu.cyclic.app
+const API = axios.create({ baseURL: 'https://dull-blue-dolphin-tutu.cyclic.app/api/' });
 
 //auth
 export const signIn = async ({ email, password }) => await API.post('/auth/signin', { email, password }, { withCredentials: true });
